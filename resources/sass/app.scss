@@ -1,0 +1,21 @@
+// Variables
+@import 'variables';
+
+@import "~bootstrap/scss/functions";
+@import '~bootstrap/scss/variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Components
+@import "components/links";
+@import "components/layout";
+@import "components/logo";
+@import "components/sidebar";
+
+
+ion-icon {
+  font-size: 18px;
+  display: flex!important;
+}
+

@@ -1,0 +1,44 @@
+body {
+  font-size: 16px;
+  font-family: $font-family-sans-serif;
+}
+
+.app-container {
+  position: relative;
+}
+
+.navbar-white {
+  background-color: #fff;
+  box-shadow: 0 .1rem 1rem rgba($black, .09);
+}
+
+.card-border-top {
+  border: 0;
+  border-top: 4px solid $primary;
+}
+
+.card-header {
+  background: white;
+}
+
+.navbar-border-top {
+  border-top: 2px solid $primary;
+}
+
+.min-vh {
+  min-height: calc(100vh - 160px);
+}
+
+.main-content {
+  height: 100vh;
+  margin-left: $sidebar-width;
+
+  @include media-breakpoint-down(lg) {
+    margin-left: 0
+  }
+}
+
+
+.main-content {
+  transition: margin-left .3s linear;
+}

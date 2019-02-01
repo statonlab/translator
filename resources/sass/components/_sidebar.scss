@@ -1,0 +1,42 @@
+.sidebar {
+  z-index: 9000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $sidebar-width;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: $sidebar-bg-color;
+  color: $sidebar-text-color;
+
+  @include media-breakpoint-down(lg) {
+    left: -$sidebar-width;
+  }
+
+  transition: left .3s linear;
+}
+
+.nav-sidebar {
+  ion-icon {
+    width: 30px;
+    text-align: center;
+    margin-top: 2px;
+    font-size: 20px;
+  }
+  .nav-item {
+    @extend .mb-1;
+  }
+
+  .nav-link {
+    @extend .rounded;
+    color: $sidebar-text-color;
+    &:hover {
+      background-color: darken($sidebar-bg-color, 3%);
+    }
+  }
+
+  .router-link-active {
+    background-color: darken($sidebar-bg-color, 3%);
+    color: $white;
+  }
+}
