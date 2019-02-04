@@ -3224,6 +3224,11 @@ invert-kv@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
 
+ionicons@^4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/ionicons/-/ionicons-4.5.5.tgz#b059958a54dd45cfa127acc0baf11503b8671e51"
+  integrity sha512-dIGI73XG6Fg2Ps77ry5Ywe36Pq7wUGkDkl0pBhC4uhsiyoW+oXe+pplmarXEnKEcB5fmlkRrBOxYYzZaoRiUGw==
+
 ip-regex@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-2.1.0.tgz#fa78bf5d2e6913c911ce9f819ee5146bb6d844e9"
@@ -6323,6 +6328,11 @@ vm-browserify@0.0.4:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
+
+vue-apexcharts@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/vue-apexcharts/-/vue-apexcharts-1.2.8.tgz#b08303dd67b3cb4616f806f9a7466aa656eea21a"
+  integrity sha512-Sn7uyt3RLhYEVMbdqHrY9GMq35gPgOPP7ZQFEzWlXiMQ1816oabFppHSKoNIxREHjWpuUv+0InsxjK6XhzTZbQ==
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.1"

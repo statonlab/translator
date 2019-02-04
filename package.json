@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "apexcharts": "^3.2.1",
+        "ionicons": "^4.5.5",
         "vue-apexcharts": "^1.2.8",
         "vue-router": "^3.0.2"
     }

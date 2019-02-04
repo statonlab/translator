@@ -6,23 +6,28 @@
 
 import './bootstrap'
 import Vue from 'vue'
+
+// Plugins
 import VueRouter from 'vue-router'
 
 // Screens
 import App from './components/App'
 import Dashboard from './views/Dashboard'
+import Users from './views/Users'
 
 Vue.config.ignoredElements = [/^ion-/]
 
 // Register VueRouter
 Vue.use(VueRouter)
+// Vue.use(ApexCharts)
 
 // Each route should map to a component. The "component" can
 // either be an actual component constructor created via
 // `Vue.extend()`, or just a component options object.
 // We'll talk about nested routes later.
 const routes = [
-  {path: '/', component: Dashboard}
+  {path: '/', component: Dashboard},
+  {path: '/users', component: Users}
 ]
 
 // 3. Create the router instance and pass the `routes` option

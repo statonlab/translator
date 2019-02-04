@@ -1,8 +1,8 @@
 <template>
     <div class="app-container">
-        <sidebar/>
+        <sidebar @change="activeLink = $event"/>
         <div class="main-content">
-            <navbar></navbar>
+            <navbar :title="activeLink.title"></navbar>
             <div class="container py-4">
                 <router-view></router-view>
             </div>
@@ -15,7 +15,20 @@
   import Navbar from './Navbar'
   export default {
     name: 'App',
-    components: {Navbar, Sidebar}
+
+    components: {Navbar, Sidebar},
+
+    watch: {
+      activeLink(link) {
+        document.title = `${link.title} | ${window.app.name}`
+      }
+    },
+
+    data() {
+      return {
+        activeLink: ''
+      }
+    }
   }
 </script>
 

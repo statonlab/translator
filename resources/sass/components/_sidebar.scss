@@ -1,5 +1,5 @@
 .sidebar {
-  z-index: 9000;
+  z-index: $zindex-fixed;
   position: absolute;
   top: 0;
   left: 0;
@@ -14,29 +14,47 @@
   }
 
   transition: left .3s linear;
-}
 
-.nav-sidebar {
-  ion-icon {
-    width: 30px;
-    text-align: center;
-    margin-top: 2px;
-    font-size: 20px;
-  }
-  .nav-item {
-    @extend .mb-1;
-  }
+  .nav {
+    ion-icon {
+      width: 30px;
+      text-align: center;
+      margin-top: 1px;
+      font-size: 20px;
 
-  .nav-link {
-    @extend .rounded;
-    color: $sidebar-text-color;
-    &:hover {
-      background-color: darken($sidebar-bg-color, 3%);
+      &.ml-auto {
+        transition: transform .3s linear;
+      }
     }
-  }
+    .nav-item {
+      @extend .mb-1;
+    }
 
-  .router-link-active {
-    background-color: darken($sidebar-bg-color, 3%);
-    color: $white;
+    .nav-link {
+      @extend .rounded;
+      color: $sidebar-text-color;
+      &:hover {
+        background-color: darken($sidebar-bg-color, 3%);
+      }
+    }
+
+    > .nav-item > .nav {
+      display: none;
+      background-color: lighten($sidebar-bg-color, 10%);
+    }
+
+    .router-link-active,
+    .active {
+      background-color: darken($sidebar-bg-color, 3%);
+      color: $white;
+
+      ion-icon.ml-auto {
+        transform: rotate(-90deg);
+      }
+
+      +.nav {
+        @extend .d-flex;
+      }
+    }
   }
 }

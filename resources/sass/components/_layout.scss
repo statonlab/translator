@@ -42,3 +42,20 @@ body {
 .main-content {
   transition: margin-left .3s linear;
 }
+
+
+.w-max-18 {
+  max-width: 18rem;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.w-min-15 {
+  min-width: 15rem;
+}
+
+.w-full {
+  width: 100%;
+}

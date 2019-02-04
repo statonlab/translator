@@ -14,7 +14,13 @@
 Auth::routes(['register' => false]);
 
 Route::group([
-    'middleware' => ['auth']
-], function() {
-    Route::get('/', 'HomeController@index')->name('home');
+    'middleware' => ['auth'],
+], function () {
+    Route::get('/', 'HomeController@index');
+    Route::get('/users', 'HomeController@index');
+    Route::get('/translate', 'HomeController@index');
+
+    Route::get('/logout', 'Auth\\LoginController@logout');
+
+    Route::get('/web/users', 'UsersController@index');
 });

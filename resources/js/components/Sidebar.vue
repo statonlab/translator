@@ -1,29 +1,30 @@
 <template>
     <aside class="sidebar shadow">
-        <div class="logo text-center mb-3 d-flex align-items-center bg-dark shadow">
+        <div class="logo text-center mb-3 d-flex align-items-center bg-dark shadow"
+             @click="$emit('change', 'Dashboard')">
             <router-link to="/" class="font-weight-bold d-flex align-items-center">
-                <!--<div class="logo-icon d-flex">-->
-                    <!--<ion-icon name="ios-bowtie" class="text-dark"></ion-icon>-->
-                <!--</div>-->
-
                 <img src="/img/TranslateLogo.png" alt="Logo" class="img-fluid d-flex">
                 <span class="d-inline-block ml-2 text-white">{{ appName }}</span>
             </router-link>
         </div>
 
+        <form class="px-2 mb-3">
+            <input class="form-control bg-light shadow-sm border-0"
+                   type="search"
+                   placeholder="Search"
+                   aria-label="Search">
+        </form>
+
         <div class="px-2 pb-4">
             <ul class="nav nav-sidebar flex-column">
-                <li class="nav-item">
-                    <router-link to="/" class="nav-link d-flex" :exact="true">
-                        <ion-icon name="analytics"></ion-icon>
-                        <span class="nav-text ml-2">Dashboard</span>
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link to="/notifications" class="nav-link d-flex">
-                        <ion-icon name="notifications"></ion-icon>
-                        <span class="nav-text ml-2">Notifications</span>
-                        <ion-icon name="ios-arrow-back" class="ml-auto"></ion-icon>
+                <li v-for="link in links"
+                    class="nav-item"
+                    @click="$emit('change', link)">
+                    <router-link :to="link.path"
+                                 :class="['nav-link', 'd-flex']"
+                                 :exact="link.exact">
+                        <ion-icon :name="link.icon"></ion-icon>
+                        <span class="nav-text ml-2">{{ link.title }}</span>
                     </router-link>
                 </li>
             </ul>
@@ -37,7 +38,50 @@
 
     data() {
       return {
-        appName: window.app ? window.app.name : ''
+        appName: window.app ? window.app.name : '',
+        opened : '',
+        links  : [
+          {
+            title: 'Dashboard',
+            icon : 'analytics',
+            path : '/',
+            exact: true
+          },
+          {
+            title: 'Translations',
+            icon : 'filing',
+            path : '/translate'
+          },
+          {
+            title: 'Users',
+            icon : 'contacts',
+            path : '/users'
+          }
+        ]
+      }
+    },
+
+    mounted() {
+      this.setInitialTitle()
+    },
+
+    methods: {
+      open(menu) {
+        this.opened = menu
+      },
+
+      setInitialTitle() {
+        for (let i in this.links) {
+          if (!this.links.hasOwnProperty(i)) {
+            return
+          }
+
+          const link = this.links[i]
+          const path = window.location.pathname
+          if ((link.exact && link.path === path) || (!link.exact && path.indexOf(link.path) > -1)) {
+            this.$emit('change', link)
+          }
+        }
       }
     }
   }
