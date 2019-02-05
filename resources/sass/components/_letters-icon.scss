@@ -15,6 +15,12 @@
       left: 20px;
       + .letter-icon {
         left: 40px;
+        + .letter-icon {
+          left: 60px;
+          + .letter-icon {
+            left: 80px;
+          }
+        }
       }
     }
   }
@@ -26,6 +32,12 @@
       left: 40px;
       + .letter-icon {
         left: 80px;
+        + .letter-icon {
+          left: 120px;
+          + .letter-icon {
+            left: 160px;
+          }
+        }
       }
     }
   }

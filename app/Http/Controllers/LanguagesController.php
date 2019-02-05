@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\Responds;
 use App\Language;
+use App\User;
 use Illuminate\Http\Request;
 
 class LanguagesController extends Controller
@@ -110,28 +111,41 @@ class LanguagesController extends Controller
     }
 
     /**
+     * Toggle an assignment.
+     *
      * @param \App\Language $language
      * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function assignMaintainer(Language $language, Request $request)
+    public function toggleAssignment(Language $language, Request $request)
     {
         $this->authorize('assign', $language);
 
         $this->validate($request, [
-            'user' => 'required|int|exists:users,id',
+            'user_id' => 'required|int|exists:users,id',
+        ]);
+
+        $changes = $language->users()->toggle([$request->user_id]);
+
+        return $this->created([
+            'attached' => count($changes['attached']) > 0,
+            'detached' => count($changes['detached']) > 0,
         ]);
     }
 
     /**
+     * Get a list of users assigned to a language.
+     *
      * @param \App\Language $language
-     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function unassignMaintainer(Language $language, Request $request)
+    public function users(Language $language)
     {
         $this->authorize('assign', $language);
 
-        $this->validate($request, [
-            'user' => 'required|int|exists:users,id',
-        ]);
+        return $this->success($language->users->only(['id', 'name']));
     }
 }

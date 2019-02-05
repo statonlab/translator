@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import OutClick from '../OutClick'
+  import OutClick from './OutClick'
 
   export default {
     name      : 'Editable',

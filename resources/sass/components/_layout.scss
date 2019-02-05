@@ -75,3 +75,9 @@ ion-icon {
     vertical-align: middle;
   }
 }
+
+.item-striped {
+  &:nth-of-type(even) {
+    background-color: $light;
+  }
+}

@@ -11,7 +11,7 @@
                             class="nav-link"
                             href="#"
                             role="button">
-                        <letter-icon :value="user.name" class="d-inline-flex mr-1" :small="true"/>
+                        <letter-icon :tooltip="false" :value="user.name" class="d-inline-flex mr-1" :small="true"/>
                         {{ user.name }}
                     </router-link>
                 </li>

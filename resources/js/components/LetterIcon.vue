@@ -1,6 +1,7 @@
 <template>
-    <div :class="['letter-icon d-flex align-items-center justify-content-center shadow-sm', {'letter-icon-sm': small}]"
-         :title="value">
+    <div ref="icon"
+         :class="['letter-icon d-flex align-items-center justify-content-center shadow-sm', {'letter-icon-sm': small}]"
+         :title="title || value">
         <span>{{ letters }}</span>
     </div>
 </template>
@@ -10,13 +11,25 @@
     name: 'LetterIcon',
 
     props: {
-      value : {required: true, type: String},
-      format: {
+      value  : {required: true, type: String},
+      format : {
         required: false, default: 'normal', validator(v) {
           return ['language', 'normal'].indexOf(v) > -1
         }
       },
-      small : {required: false, default: false, type: Boolean}
+      small  : {required: false, default: false, type: Boolean},
+      tooltip: {required: false, default: true, type: Boolean},
+      title  : {required: false, type: String}
+    },
+
+    mounted() {
+      if (this.tooltip) {
+        const $icon = $(this.$refs.icon)
+        $icon.tooltip({
+          selector: true,
+          title   : () => $icon.attr('data-original-title') || $icon.attr('title')
+        })
+      }
     },
 
     computed: {

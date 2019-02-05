@@ -33,15 +33,9 @@
                             <tbody>
                             <tr v-for="language in languages">
                                 <td class="flag-td">
-                                    <div v-if="language.image">
-                                        <img
-                                                :src="language.image"
-                                                :alt="`Image for ${language.language}`"
-                                                class="img-fluid rounded-full shadow flag">
-                                    </div>
-
                                     <letter-icon v-if="!language.image"
                                                  :value="language.language_code"
+                                                 :title="language.language"
                                                  format="language"/>
                                 </td>
                                 <td>
@@ -61,7 +55,12 @@
                                 </td>
                                 <td>
                                     <div v-if="language.users.length > 0" class="stacked-icons d-inline-block">
-                                        <letter-icon v-for="user in language.users" :value="user.name" :key="user.id"/>
+                                        <letter-icon v-for="user in language.users.slice(0, 3)"
+                                                     :value="user.name"
+                                                     :key="user.id"/>
+                                        <letter-icon v-if="moreCount(language)> 0"
+                                                     :value="moreCount(language) + ' +'"
+                                                     :title="moreCount(language) + ' More User(s)'"/>
                                     </div>
                                     <span v-if="language.users.length === 0">None</span>
                                 </td>
@@ -104,12 +103,17 @@
         </div>
 
         <modal v-if="showCreateModal" @close="showCreateModal = false">
-            <language-form @create="languageCreated()"/>
+            <language-form
+                    @close="showCreateModal = false"
+                    @create="languageCreated()"/>
         </modal>
 
         <modal v-if="showAssigneesModal"
-                @close="showAssigneesModal = false">
-            <language-form/>
+               @close="showAssigneesModal = false">
+            <language-assignees-form
+                    @toggle="toggleAssignment($event)"
+                    @close="showAssigneesModal = false"
+                    :language="selectedLanguage"/>
         </modal>
     </div>
 </template>
@@ -119,10 +123,11 @@
   import LanguageForm from '../forms/LanguageForm'
   import LetterIcon from '../components/LetterIcon'
   import Editable from '../components/Editable'
+  import LanguageAssigneesForm from '../forms/LanguageAssigneesForm'
 
   export default {
     name      : 'Languages',
-    components: {Editable, LetterIcon, LanguageForm, Modal},
+    components: {LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
 
     watch: {
       search() {
@@ -158,6 +163,15 @@
         }
       },
 
+      moreCount(language) {
+        return language.users.length - 3
+      },
+
+      manageAssignees(language) {
+        this.selectedLanguage   = language
+        this.showAssigneesModal = true
+      },
+
       languageCreated() {
         this.loadLanguages()
         this.showCreateModal = false
@@ -167,7 +181,7 @@
         try {
           let data    = {}
           data[field] = event.value
-          await axios.patch(`/web/languages/${language.id}`, data)
+          await axios.patch(`/web/language/${language.id}`, data)
           this.loadLanguages()
           event.done()
         } catch (e) {
@@ -185,7 +199,7 @@
         }
 
         try {
-          await axios.delete(`/web/languages/${language.id}`)
+          await axios.delete(`/web/language/${language.id}`)
           this.loadLanguages()
         } catch (e) {
           if (e.response && e.response.status === 422) {
@@ -194,6 +208,24 @@
 
           console.error(e)
         }
+      },
+
+      toggleAssignment(event) {
+        const {op, user} = event
+
+        if (op === 'attach') {
+          this.selectedLanguage.users.push(user)
+        } else {
+          this.selectedLanguage.users = this.selectedLanguage.users.filter(u => u.id !== user.id)
+        }
+
+        this.languages = this.languages.map(l => {
+          if (l.id === this.selectedLanguage.id) {
+            l = this.selectedLanguage
+          }
+
+          return l
+        })
       }
     }
   }

@@ -169,7 +169,7 @@
         }
 
         try {
-          await axios.delete(`/web/users/${user.id}`)
+          await axios.delete(`/web/user/${user.id}`)
           this.loadUsers()
         } catch (e) {
           alert(e.response && e.response.status === 422 ? e.response.data.message : 'Unable to delete user')
@@ -182,7 +182,7 @@
         try {
           let data       = {}
           data[field]    = event.value
-          const response = await axios.patch(`/web/users/${user.id}`, data)
+          const response = await axios.patch(`/web/user/${user.id}`, data)
           this.loadUsers()
           event.done()
         } catch (e) {

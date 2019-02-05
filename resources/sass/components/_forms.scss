@@ -1,3 +1,15 @@
 .form-control {
   @extend .shadow-sm;
 }
+
+.limit-width {
+  max-width: 30rem;
+}
+
+.form-label {
+  @extend .font-weight-bold;
+}
+
+.width-auto {
+  width: auto;
+}

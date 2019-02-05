@@ -20,7 +20,7 @@ class LanguagePolicy
     }
 
     /**
-     * Determine whether the user can view the = language.
+     * Determine whether the user can view the language.
      *
      * @param  \App\User $user
      * @param  \App\Language $Language
@@ -32,7 +32,7 @@ class LanguagePolicy
     }
 
     /**
-     * Determine whether the user can create = languages.
+     * Determine whether the user can create languages.
      *
      * @param  \App\User $user
      * @return mixed
@@ -43,7 +43,7 @@ class LanguagePolicy
     }
 
     /**
-     * Determine whether the user can update the = language.
+     * Determine whether the user can update the language.
      *
      * @param  \App\User $user
      * @param  \App\Language $Language
@@ -55,7 +55,7 @@ class LanguagePolicy
     }
 
     /**
-     * Determine whether the user can delete the = language.
+     * Determine whether the user can delete the language.
      *
      * @param  \App\User $user
      * @param  \App\Language $Language
@@ -67,7 +67,7 @@ class LanguagePolicy
     }
 
     /**
-     * Determine whether the user can restore the = language.
+     * Determine whether the user can restore the language.
      *
      * @param  \App\User $user
      * @param  \App\Language $Language
@@ -79,7 +79,7 @@ class LanguagePolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the = language.
+     * Determine whether the user can permanently delete the language.
      *
      * @param  \App\User $user
      * @param  \App\Language $Language
