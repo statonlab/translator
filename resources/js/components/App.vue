@@ -13,6 +13,7 @@
 <script>
   import Sidebar from './Sidebar'
   import Navbar from './Navbar'
+
   export default {
     name: 'App',
 
@@ -28,6 +29,20 @@
       return {
         activeLink: ''
       }
+    },
+
+    mounted() {
+      this.$root.$on('changeTitle', title => {
+        document.title  = `${title} | ${window.app.name}`
+        this.activeLink = {
+          title: title,
+          path : window.location.pathname
+        }
+      })
+    },
+
+    methods: {
+
     }
   }
 </script>

@@ -73,6 +73,9 @@ export default class Form {
   }
 
   submit(requestType, url, override) {
+    if (url.length === 0) {
+      throw new Error('Please provide a valid URL')
+    }
     return new Promise((resolve, reject) => {
       axios[requestType](url, this.data(override)).then(response => {
         resolve(response)

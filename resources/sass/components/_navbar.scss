@@ -1,3 +1,64 @@
 .main-navbar {
   height: $navbar-height;
+
+  ul.ml-auto {
+    .nav-item:not(:last-of-type) {
+      @extend .border-right;
+      @extend .pr-2;
+    }
+  }
+
+  ion-icon {
+    font-size: 1.2rem;
+    @extend .pl-2;
+  }
+
+  .nav-link {
+    &.router-link-active,
+    &.active {
+      color: $gray-900;
+    }
+  }
+}
+
+.nav-link {
+  color: $gray-600;
+}
+
+.nav-tabs {
+  .nav-item {
+    .nav-link {
+      @extend .font-weight-bold;
+      padding: 1rem;
+      &:active,
+      &:hover,
+      &:focus {
+        border-color: transparent;
+      }
+
+      &:hover {
+        color: $primary;
+      }
+
+      &.active {
+        background-color: transparent;
+        border-color: transparent;
+        border-bottom: 2px solid $primary;
+        &,
+        &:hover {
+          color: $dark;
+        }
+      }
+    }
+  }
+}
+
+.nav-link {
+  @extend .d-inline-flex;
+  @extend .align-items-center;
+
+  ion-icon + span {
+    @extend .d-inline-flex;
+    @extend .ml-2
+  }
 }

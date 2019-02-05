@@ -59,3 +59,19 @@ body {
 .w-full {
   width: 100%;
 }
+
+ion-icon {
+  font-size: 18px;
+  display: flex!important;
+}
+
+.rounded-full {
+  border-radius: 50%;
+}
+
+.table-middle {
+  > tbody > tr > td,
+  > tbody > tr > th {
+    vertical-align: middle;
+  }
+}

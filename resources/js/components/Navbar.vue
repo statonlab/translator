@@ -4,25 +4,21 @@
             <h1 class="navbar-text mb-0 font-weight-bold text-dark h5">
                 {{ title }}
             </h1>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a id="navbarDropdown"
-                       class="nav-link dropdown-toggle"
-                       href="#"
-                       role="button"
-                       data-toggle="dropdown"
-                       aria-haspopup="true"
-                       aria-expanded="false">
-                        {{ user.name }} <span class="caret"></span>
+            <ul class="navbar-nav ml-auto align-items-center">
+                <li class="nav-item">
+                    <router-link
+                            to="/profile"
+                            class="nav-link"
+                            href="#"
+                            role="button">
+                        <letter-icon :value="user.name" class="d-inline-flex mr-1" :small="true"/>
+                        {{ user.name }}
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link">
+                        <ion-icon name="log-out"></ion-icon>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <router-link to="/" class="dropdown-item">
-                            Profile
-                        </router-link>
-                        <a href="/logout" class="dropdown-item">
-                            Logout
-                        </a>
-                    </div>
                 </li>
             </ul>
         </div>
@@ -30,15 +26,17 @@
 </template>
 
 <script>
-  export default {
-    name : 'Navbar',
+  import LetterIcon from './LetterIcon'
 
-    props: {title: {type: String, required: false, default: ''}},
+  export default {
+    name      : 'Navbar',
+    components: {LetterIcon},
+    props     : {title: {type: String, required: false, default: ''}},
 
     data() {
       return {
         user      : window.app.user,
-        showSearch: false,
+        showSearch: false
       }
     }
   }

@@ -12,6 +12,7 @@ class Language extends Model
     protected $fillable = [
         'language',
         'image',
+        'language_code',
     ];
 
     /**

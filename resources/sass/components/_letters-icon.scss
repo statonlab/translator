@@ -1,0 +1,32 @@
+.letters-icon {
+  height: 45px;
+}
+
+.stacked-icons {
+  position: relative;
+  height: 55px;
+  .letter-icon {
+    transition: left 150ms linear;
+    position: absolute;
+    border: 2px solid $white;
+    @extend .shadow-none;
+    left: 0;
+    + .letter-icon {
+      left: 20px;
+      + .letter-icon {
+        left: 40px;
+      }
+    }
+  }
+}
+
+.stacked-icons:hover {
+  .letter-icon {
+    + .letter-icon {
+      left: 40px;
+      + .letter-icon {
+        left: 80px;
+      }
+    }
+  }
+}
