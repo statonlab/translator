@@ -1,6 +1,6 @@
 .sidebar {
   z-index: $zindex-fixed;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: $sidebar-width;
@@ -32,9 +32,15 @@
 
     .nav-link {
       @extend .rounded;
+      @extend .font-weight-bold;
+      transition: background-color 150ms linear, color 150ms linear;
       color: $sidebar-text-color;
       &:hover {
-        background-color: darken($sidebar-bg-color, 3%);
+        background-color: darken($sidebar-bg-color, 7%);
+      }
+
+      &:active {
+        box-shadow: inset 0 3px 18px rgba(0, 0, 0, .3);
       }
     }
 
@@ -45,14 +51,17 @@
 
     .router-link-active,
     .active {
-      background-color: darken($sidebar-bg-color, 3%);
-      color: $white;
+      &,
+      &:hover {
+        background-color: $light;
+        color: $dark;
+      }
 
       ion-icon.ml-auto {
         transform: rotate(-90deg);
       }
 
-      +.nav {
+      + .nav {
         @extend .d-flex;
       }
     }

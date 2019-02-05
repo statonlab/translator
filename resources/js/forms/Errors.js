@@ -17,7 +17,7 @@ export default class Errors {
   }
 
   set(errors) {
-    this.errors = errors
+    this.errors = errors.errors
   }
 
   clear(field) {

@@ -30,15 +30,26 @@ $gray-900: #212529;
 
 // Colors
 $blue: #1976d2;
-$indigo: #6574cd;
-$purple: #9561e2;
-$pink: #f66D9b;
-$red: #e3342f;
-$orange: #f6993f;
-$yellow: #ffed4a;
-$green: #38c172;
-$teal: #4dc0b5;
-$cyan: #6cb2eb;
+//$indigo: #6574cd;
+//$purple: #9561e2;
+//$pink: #f66D9b;
+//$red: #e3342f;
+//$orange: #f6993f;
+//$yellow: #ffed4a;
+//$green: #38c172;
+//$teal: #4dc0b5;
+//$cyan: #6cb2eb;
+
+$indigo: #6610f2;
+$purple: #6f42c1;
+$pink: #e83e8c;
+$red: #dc3545;
+$orange: #fd7e14;
+$yellow: #ffc107;
+$green: #28a745;
+$teal: #20c997;
+$cyan: #17a2b8;
+
 $black: #000;
 $white: #fff;
 $dark: #343a40;
@@ -53,8 +64,8 @@ $box-shadow-lg: 0 15px 30px 0 rgba(0, 0, 0, 0.11), 0 5px 15px 0 rgba(0, 0, 0, 0.
 $sidebar-width: 250px;
 $sidebar-text-color: $light;
 $sidebar-bg-color: $dark;
-$border-color: #f8f9fa;
+$border-color: #ddd;
 
 // Header
 $navbar-height: 57px;
-
+$nav-tabs-border-radius: 0;

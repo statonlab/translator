@@ -11,13 +11,14 @@
         <form class="px-2 mb-3">
             <input class="form-control bg-light shadow-sm border-0"
                    type="search"
+                   v-model="search"
                    placeholder="Search"
                    aria-label="Search">
         </form>
 
         <div class="px-2 pb-4">
             <ul class="nav nav-sidebar flex-column">
-                <li v-for="link in links"
+                <li v-for="link in filteredLinks"
                     class="nav-item"
                     @click="$emit('change', link)">
                     <router-link :to="link.path"
@@ -28,6 +29,8 @@
                     </router-link>
                 </li>
             </ul>
+
+            <p class="text-white px-4" v-if="filteredLinks.length === 0">0 results found</p>
         </div>
     </aside>
 </template>
@@ -40,6 +43,7 @@
       return {
         appName: window.app ? window.app.name : '',
         opened : '',
+        search : '',
         links  : [
           {
             title: 'Dashboard',
@@ -53,16 +57,36 @@
             path : '/translate'
           },
           {
+            title: 'Languages',
+            icon : 'copy',
+            path : '/languages'
+          },
+          {
             title: 'Users',
             icon : 'contacts',
             path : '/users'
           }
-        ]
+        ],
+
+        filteredLinks: []
       }
     },
 
     mounted() {
       this.setInitialTitle()
+      this.filteredLinks = this.links
+    },
+
+    watch: {
+      search(term) {
+        term = term.trim()
+        if (term.length === 0) {
+          this.filteredLinks = this.links
+          return
+        }
+
+        this.filteredLinks = this.links.filter(link => link.title.indexOf(term) > -1)
+      }
     },
 
     methods: {
