@@ -13,6 +13,15 @@
 
 Auth::routes(['register' => false]);
 
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+| Accessible only to authenticated users despite their role in
+| the application. That is, users with role "Admin" and users
+| with role "User" can access these routes. Fine grained
+| control of each method can be done using Policies.
+*/
 Route::group([
     'middleware' => ['auth'],
 ], function () {
@@ -35,12 +44,28 @@ Route::group([
     // Users
     Route::get('/web/users', 'UsersController@index');
     Route::post('/web/users', 'UsersController@create');
-    Route::delete('/web/users/{user}', 'UsersController@delete');
-    Route::patch('/web/users/{user}', 'UsersController@patch');
+    Route::delete('/web/user/{user}', 'UsersController@delete');
+    Route::get('/web/user/{user?}', 'UsersController@show');
+    Route::patch('/web/user/password', 'UsersController@patchPassword');
+    Route::patch('/web/user/{user?}', 'UsersController@patch');
+    Route::put('/web/user/{user?}', 'UsersController@update');
+});
 
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+| Accessible only to users who have the role Admin.
+*/
+Route::group([
+    'middleware' => ['auth', 'admin'],
+], function () {
     // Languages
     Route::get('/web/languages', 'LanguagesController@index');
     Route::post('/web/languages', 'LanguagesController@create');
-    Route::delete('/web/languages/{language}', 'LanguagesController@delete');
-    Route::patch('/web/languages/{language}', 'LanguagesController@patch');
+    Route::delete('/web/language/{language}', 'LanguagesController@delete');
+    Route::patch('/web/language/{language}', 'LanguagesController@patch');
+    Route::post('/web/language/{language}/user', 'LanguagesController@toggleAssignment');
+    Route::get('/web/language/{language}/users', 'LanguagesController@users');
+
 });

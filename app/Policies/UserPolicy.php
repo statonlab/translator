@@ -70,4 +70,14 @@ class UserPolicy
     {
         return $this->isAdminOrOwner($user, $user2);
     }
+
+    /**
+     * @param \App\User $user
+     * @param \App\User $user2
+     * @return bool
+     */
+    public function show(User $user, User $user2)
+    {
+        return $this->isAdminOrOwner($user, $user2);
+    }
 }

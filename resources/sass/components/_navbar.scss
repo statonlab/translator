@@ -53,12 +53,14 @@
   }
 }
 
-.nav-link {
-  @extend .d-inline-flex;
-  @extend .align-items-center;
-
-  ion-icon + span {
+.nav:not(.flex-column) {
+  .nav-link {
     @extend .d-inline-flex;
-    @extend .ml-2
+    @extend .align-items-center;
+
+    ion-icon + span {
+      @extend .d-inline-flex;
+      @extend .ml-2
+    }
   }
 }

@@ -14,7 +14,7 @@ abstract class TestCase extends BaseTestCase
      * Create an admin user.
      *
      * @param array $overrides
-     * @return mixed
+     * @return User
      */
     public function makeAdminUser(array $overrides = [])
     {
@@ -27,7 +27,7 @@ abstract class TestCase extends BaseTestCase
      * Create a regular user.
      *
      * @param array $overrides
-     * @return mixed
+     * @return User
      */
     public function makeUser(array $overrides = [])
     {

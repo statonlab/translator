@@ -85,15 +85,79 @@ class LanguagesAPITest extends TestCase
         ]);
     }
 
-    public function testThatDeletingLanguagesWorks() {
+    /** @test */
+    public function testThatDeletingLanguagesWorks()
+    {
         $user = $this->makeAdminUser();
 
         $this->actingAs($user);
 
         $language = factory(Language::class)->create();
 
-        $response = $this->delete("/web/languages/$language->id");
+        $response = $this->delete("/web/language/$language->id");
 
         $response->assertSuccessful();
+    }
+
+    public function testNonAdminCantToggleAssignment()
+    {
+        $user = $this->makeUser();
+        $assignee = $this->makeUser();
+
+        $this->actingAs($user);
+
+        $language = factory(Language::class)->create();
+
+        $response = $this->post('/web/language/'.$language->id.'/user', [
+            'user_id' => $assignee->id,
+        ]);
+
+        $response->assertForbidden();
+    }
+
+    public function testThatAdminsCanToggleAssignment()
+    {
+        $admin = $this->makeAdminUser();
+        $this->actingAs($admin);
+
+        $assignee = $this->makeUser();
+        $language = factory(Language::class)->create();
+
+        $response = $this->post('/web/language/'.$language->id.'/user', [
+            'user_id' => $assignee->id,
+        ]);
+
+        // Validate response
+        $response->assertSuccessful();
+        $response->assertJsonStructure([
+            'attached',
+            'detached',
+        ]);
+
+        // We should have attached as the correct operation
+        $response->assertJson(['attached' => true, 'detached' => false]);
+
+        // Now the user should exist in the pivot table
+        $this->assertEquals(1,
+            $language->users()->where('users.id', $assignee->id)->count());
+
+        // If we toggle again it should detach
+        $response = $this->post('/web/language/'.$language->id.'/user', [
+            'user_id' => $assignee->id,
+        ]);
+
+        // do we have a response?
+        $response->assertSuccessful();
+        $response->assertJsonStructure([
+            'attached',
+            'detached',
+        ]);
+
+        // Did the server respond with the correct operation?
+        $response->assertJson(['attached' => false, 'detached' => true]);
+
+        // Now make sure the user is no longer attached
+        $this->assertEquals(0,
+            $language->users()->where('users.id', $assignee->id)->count());
     }
 }

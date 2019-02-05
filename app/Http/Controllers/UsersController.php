@@ -8,6 +8,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UsersController extends Controller
 {
@@ -24,6 +25,11 @@ class UsersController extends Controller
     {
         $this->authorize('lists', User::class);
 
+        $this->validate($request, [
+            'search' => 'nullable|max:255',
+            'limit' => 'nullable|int|min:6|max:100',
+        ]);
+
         $users = User::with('role');
 
         if ($request->search) {
@@ -37,7 +43,7 @@ class UsersController extends Controller
             });
         }
 
-        $users = $users->orderBy('users.name', 'asc')->paginate(20);
+        $users = $users->orderBy('users.name', 'asc')->paginate($request->limit ?: 20);
 
         $users->getCollection()->transform(function ($user) {
             /** @var User $user */
@@ -47,6 +53,25 @@ class UsersController extends Controller
         });
 
         return $this->success($users);
+    }
+
+    /**
+     * Get the current user.
+     *
+     * @param \App\User $user
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function show(User $user = null)
+    {
+        $user = $this->getUser($user);
+
+        $this->authorize('show', $user);
+
+        $user->load('role');
+
+        return $this->success($user);
     }
 
     /**
@@ -103,9 +128,12 @@ class UsersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function patch(User $user, Request $request)
+    public function patch(Request $request, User $user = null)
     {
+        $user = $this->getUser($user);
+
         $this->authorize('update', $user);
 
         $this->validate($request, [
@@ -115,18 +143,35 @@ class UsersController extends Controller
             'role' => 'nullable|in:Admin,User',
         ]);
 
+        if (! empty($request->email)) {
+            if ($user->email !== $request->email) {
+                if (User::where('email', $request->email)->count() > 0) {
+                    return $this->error('Email must be unique', [
+                        'email' => ['The provided email already exists'],
+                    ]);
+                }
+            }
+        }
+
         $user->fill($request->only([
             'name',
             'email',
         ]));
 
         if (! empty($request->password)) {
+            if (! $request->user()->isAdmin()) {
+                return abort(403);
+            }
             $user->fill([
                 'password' => \Hash::make($request->password),
             ]);
         }
 
         if (! empty($request->role)) {
+            if (! $request->user()->isAdmin()) {
+                return abort(403);
+            }
+
             $role = Role::where('name', $request->role)->first();
 
             if ($role) {
@@ -141,5 +186,94 @@ class UsersController extends Controller
         $user->load('role');
 
         return $this->created($user);
+    }
+
+    /**
+     * Update the user.
+     *
+     * @param \App\User $user
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function update(Request $request, User $user = null)
+    {
+        $user = $this->getUser($user);
+
+        $this->authorize('update', $user);
+
+        $this->validate($request, [
+            'name' => 'required|max:100',
+            'email' => 'required|email|max:255',
+        ]);
+
+        if ($user->email !== $request->email) {
+            if (User::where('email', $request->email)->count() > 0) {
+                return $this->error('Email must be unique', [
+                    'email' => ['The provided email already exists'],
+                ]);
+            }
+        }
+
+        $user->fill($request->only(['email', 'name']))->save();
+
+        $user->load('role');
+
+        return $this->created($user);
+    }
+
+    /**
+     * Update the authenticated user password.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function patchPassword(Request $request)
+    {
+        $this->validate($request, [
+            'old_password' => 'required',
+            'password' => 'required|confirmed|min:6|max:60',
+        ]);
+
+        $user = $request->user();
+
+        $credentials = [
+            'email' => $user->email,
+            'password' => $request->old_password,
+        ];
+
+        if (! auth()->attempt($credentials)) {
+            return $this->error('Invalid password', [
+                'old_password' => ['The provided password does not match the one we have on record'],
+            ]);
+        }
+
+        $user->fill(['password' => \Hash::make($request->password)])->save();
+
+        return $this->created('Password updated successfully');
+    }
+
+    /**
+     * Get the given user or the currently authenticated user if null is given.
+     *
+     * @param \App\User $user The possible user.
+     * @return \App\User
+     */
+    protected function getUser(User $user = null)
+    {
+        if (! is_null($user)) {
+            return $user;
+        }
+
+        $user = auth()->user();
+
+        if (! $user) {
+            throw new NotFoundHttpException();
+        }
+
+        return $user;
     }
 }

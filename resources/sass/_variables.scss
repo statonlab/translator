@@ -53,7 +53,7 @@ $cyan: #17a2b8;
 $black: #000;
 $white: #fff;
 $dark: #343a40;
-$light: $gray-100;
+$light: darken($gray-100, 1.5%);
 
 // Shadow
 $box-shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.10);

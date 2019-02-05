@@ -51,7 +51,7 @@ trait Responds
     {
         return JsonResponse::create([
             'message' => $message,
-            'data' => $data,
+            'errors' => $data,
         ], 422);
     }
 }
