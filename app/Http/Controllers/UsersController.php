@@ -97,7 +97,7 @@ class UsersController extends Controller
             'name' => $request->name,
             'password' => \Hash::make($request->password),
             'email' => $request->email,
-            'role_id' => Role::where('name', $request->role ?: 'User')->id,
+            'role_id' => Role::where('name', $request->role ?: 'User')->first()->id,
         ]);
 
         $user->load('role');

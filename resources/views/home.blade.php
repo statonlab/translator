@@ -17,7 +17,7 @@
     <script>
       window.app = {
         name: "{{ config('app.name') }}",
-        user: {!! json_encode(auth()->user()->only(['id', 'name'])) !!}
+        user: {!! json_encode($user->only(['id', 'name', 'role'])) !!}
       }
     </script>
 </head>
@@ -25,7 +25,8 @@
 <div id="app">
     <app/>
 </div>
-<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
 <script src="{{ mix('/js/app.js') }}"></script>
+{{--<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>--}}
+<link href="https://unpkg.com/ionicons@4.5.5/dist/css/ionicons.min.css" rel="stylesheet">
 </body>
 </html>

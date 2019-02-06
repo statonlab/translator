@@ -8,7 +8,7 @@
     }
   }
 
-  ion-icon {
+  .icon {
     font-size: 1.2rem;
     @extend .pl-2;
   }
@@ -58,7 +58,11 @@
     @extend .d-inline-flex;
     @extend .align-items-center;
 
-    ion-icon + span {
+    .icon {
+      font-size: 20px;
+    }
+
+    .icon + span {
       @extend .d-inline-flex;
       @extend .ml-2
     }

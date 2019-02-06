@@ -10,7 +10,9 @@
                 <tab name="Password" icon="lock">
                     <change-password-form/>
                 </tab>
-                <tab name="Notifications" icon="notifications"></tab>
+                <tab name="Notifications" icon="notifications">
+                    <NotificationsForm />
+                </tab>
             </tabs>
         </div>
     </div>
@@ -21,11 +23,12 @@
   import Tab from '../components/Tab'
   import PersonalInformationForm from '../forms/PersonalInformationForm'
   import ChangePasswordForm from '../forms/ChangePasswordForm'
+  import NotificationsForm from '../forms/NotificationsForm'
 
   export default {
     name: 'Profile',
 
-    components: {ChangePasswordForm, PersonalInformationForm, Tab, Tabs},
+    components: {NotificationsForm, ChangePasswordForm, PersonalInformationForm, Tab, Tabs},
 
     mounted() {
       setTimeout(() => this.$root.$emit('changeTitle', 'Profile'), 100)

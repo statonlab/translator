@@ -7,19 +7,21 @@
             <form @submit.prevent="save()" v-if="editing">
                 <div class="input-group">
                     <input v-if="type !== 'select'"
+                           @keydown="error = ''"
                            :type="type === 'password' ? 'password' : 'text'"
-                           class="form-control"
+                           :class="['form-control', {'is-invalid': error.length > 0}]"
                            name="Edit"
                            id="text-edit"
                            title="Edit"
                            v-model="content"
                            :disabled="disabled"
                            autofocus>
-                    <select name="edit"
+                    <select v-if="type === 'select'"
+                            @click="error = ''"
+                            name="edit"
                             id="select-edit"
                             v-model="content"
-                            v-if="type === 'select'"
-                            class="form-control custom-select">
+                            :class="['form-control', 'custom-select', {'is-invalid': error.length > 0}]">
                         <option v-for="option in options" :value="option.value">
                             {{ option.label }}
                         </option>
@@ -38,6 +40,7 @@
                         </button>
                     </div>
                 </div>
+                <small class="form-text text-danger" v-if="error.length > 0">{{ error }}</small>
             </form>
         </div>
     </out-click>
@@ -50,7 +53,7 @@
     name      : 'Editable',
     components: {OutClick},
     props     : {
-      value   : {required: true, type: String},
+      value   : {required: true, type: [String, Number]},
       type    : {
         required : false,
         default  : 'text',
@@ -66,7 +69,8 @@
     data() {
       return {
         editing: false,
-        content: ''
+        content: '',
+        error  : ''
       }
     },
 
@@ -93,11 +97,18 @@
         this.$emit('close')
       },
 
+      setError(message) {
+        this.error = message
+      },
+
       save() {
         this.$emit('save', {
           value: this.content,
           done : () => {
             this.close()
+          },
+          error: (message) => {
+            this.setError(message)
           }
         })
       }

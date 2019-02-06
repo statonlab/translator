@@ -33,16 +33,14 @@ body {
   height: 100vh;
   margin-left: $sidebar-width;
 
-  @include media-breakpoint-down(lg) {
+  @include media-breakpoint-down(md) {
     margin-left: 0
   }
 }
 
-
 .main-content {
   transition: margin-left .3s linear;
 }
-
 
 .w-max-18 {
   max-width: 18rem;
@@ -62,7 +60,7 @@ body {
 
 ion-icon {
   font-size: 18px;
-  display: flex!important;
+  display: flex !important;
 }
 
 .rounded-full {
@@ -79,5 +77,36 @@ ion-icon {
 .item-striped {
   &:nth-of-type(even) {
     background-color: $light;
+  }
+}
+
+.is-spinning {
+  display: inline-block;
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 1000ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
   }
 }

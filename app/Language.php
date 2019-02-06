@@ -13,6 +13,7 @@ class Language extends Model
         'language',
         'image',
         'language_code',
+        'platform_id',
     ];
 
     /**
@@ -21,5 +22,13 @@ class Language extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function platform()
+    {
+        return $this->belongsTo(Platform::class);
     }
 }

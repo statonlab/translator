@@ -1,6 +1,10 @@
 export default class Errors {
-  constructor() {
+  constructor(data) {
     this.errors = {}
+
+    if(typeof data !== 'undefined') {
+      this.set(data)
+    }
   }
 
   get(field) {

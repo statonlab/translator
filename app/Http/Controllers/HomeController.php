@@ -13,6 +13,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = auth()->user();
+
+        $user->load('role');
+
+        return view('home')->with([
+            'user' => $user,
+        ]);
     }
 }

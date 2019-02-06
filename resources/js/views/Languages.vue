@@ -1,104 +1,111 @@
 <template>
     <div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card border-0 shadow">
-                    <div class="card-header d-flex justify-content-between align-items-center border-0">
-                        <form @submit="$event.preventDefault()">
-                            <input type="search"
-                                   v-model="search"
-                                   class="form-control shadow-none form-control-sm mr-1 w-full w-max-18 w-min-15"
-                                   placeholder="Search">
-                        </form>
+        <div class="card border-0 shadow">
+            <div class="card-header d-flex justify-content-between align-items-center border-0">
+                <form @submit="$event.preventDefault()">
+                    <input type="search"
+                           v-model="search"
+                           class="form-control shadow-none form-control-sm mr-1 w-full w-max-18 w-min-15"
+                           placeholder="Search">
+                </form>
 
-                        <div class="ml-auto">
-                            <button class="d-flex btn btn-primary btn-sm font-weight-bold"
-                                    @click.prevent="showCreateModal = true">
-                                <ion-icon name="add"></ion-icon>
-                                <span class="d-inline-block ml-1">New Language</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body table-responsive p-0">
-                        <table class="table table-middle mb-0">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th>Language</th>
-                                <th>Language Code</th>
-                                <th>Maintainers</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="language in languages">
-                                <td class="flag-td">
-                                    <letter-icon v-if="!language.image"
-                                                 :value="language.language_code"
-                                                 :title="language.language"
-                                                 format="language"/>
-                                </td>
-                                <td>
-                                    <editable
-                                            :value="language.language"
-                                            @save="patch(language, 'language', $event)"
-                                    >
-                                        {{ language.language }}
-                                    </editable>
-                                </td>
-                                <td>
-                                    <editable
-                                            :value="language.language_code"
-                                            @save="patch(language, 'language_code', $event)">
-                                        {{ language.language_code }}
-                                    </editable>
-                                </td>
-                                <td>
-                                    <div v-if="language.users.length > 0" class="stacked-icons d-inline-block">
-                                        <letter-icon v-for="user in language.users.slice(0, 3)"
-                                                     :value="user.name"
-                                                     :key="user.id"/>
-                                        <letter-icon v-if="moreCount(language)> 0"
-                                                     :value="moreCount(language) + ' +'"
-                                                     :title="moreCount(language) + ' More User(s)'"/>
-                                    </div>
-                                    <span v-if="language.users.length === 0">None</span>
-                                </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-secondary btn-sm ml-auto"
-                                                type="button"
-                                                data-toggle="dropdown"
-                                                aria-haspopup="true"
-                                                aria-expanded="false">
-                                            <ion-icon name="reorder" class="d-inline-flex"></ion-icon>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item d-flex align-items-center"
-                                               href="#"
-                                               @click.prevent="manageAssignees(language)">
-                                                <span class="icon d-inline-flex mr-2">
-                                                    <ion-icon name="contacts"></ion-icon>
-                                                </span>
-                                                <span>Manage Assignees</span>
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item d-flex align-items-center text-danger"
-                                               href="#"
-                                               @click.prevent="destroy(language)">
-                                                <span class="icon d-inline-flex mr-2">
-                                                    <ion-icon name="trash" class="d-inline-flex"></ion-icon>
-                                                </span>
-                                                <span>Delete</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="ml-auto">
+                    <button class="d-flex btn btn-primary btn-sm font-weight-bold"
+                            @click.prevent="showCreateModal = true">
+                        <ion-icon name="add"></ion-icon>
+                        <span class="d-inline-block ml-1">New Language</span>
+                    </button>
                 </div>
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table table-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Language</th>
+                        <th>Platform</th>
+                        <th>Language Code</th>
+                        <th>Maintainers</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="language in languages">
+                        <td class="flag-td">
+                            <letter-icon v-if="!language.image"
+                                         :value="language.language_code"
+                                         :title="language.language"
+                                         format="language"/>
+                        </td>
+                        <td>
+                            <editable
+                                    :value="language.language"
+                                    @save="patch(language, 'language', $event)"
+                            >
+                                {{ language.language }}
+                            </editable>
+                        </td>
+                        <td>
+                            <editable
+                                    type="select"
+                                    :options="platforms"
+                                    :value="language.platform.id"
+                                    @save="patch(language, 'platform_id', $event)"
+                            >
+                                {{ language.platform.name }}
+                            </editable>
+                        </td>
+                        <td>
+                            <editable
+                                    :value="language.language_code"
+                                    @save="patch(language, 'language_code', $event)">
+                                {{ language.language_code }}
+                            </editable>
+                        </td>
+                        <td>
+                            <div v-if="language.users.length > 0" class="stacked-icons d-inline-block">
+                                <letter-icon v-for="user in language.users.slice(0, 3)"
+                                             :value="user.name"
+                                             :key="user.id"/>
+                                <letter-icon v-if="moreCount(language)> 0"
+                                             :value="moreCount(language) + ' +'"
+                                             :title="moreCount(language) + ' More User(s)'"/>
+                            </div>
+                            <span v-if="language.users.length === 0">None</span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary btn-sm ml-auto"
+                                        type="button"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <ion-icon name="reorder" class="d-inline-flex"></ion-icon>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item d-flex align-items-center"
+                                       href="#"
+                                       @click.prevent="manageAssignees(language)">
+                                        <span class="icon d-inline-flex mr-2">
+                                            <ion-icon name="contacts"></ion-icon>
+                                        </span>
+                                        <span>Manage Assignees</span>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item d-flex align-items-center text-danger"
+                                       href="#"
+                                       @click.prevent="destroy(language)">
+                                        <span class="icon d-inline-flex mr-2">
+                                            <ion-icon name="trash" class="d-inline-flex"></ion-icon>
+                                        </span>
+                                        <span>Delete</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -124,6 +131,7 @@
   import LetterIcon from '../components/LetterIcon'
   import Editable from '../components/Editable'
   import LanguageAssigneesForm from '../forms/LanguageAssigneesForm'
+  import Errors from '../forms/Errors'
 
   export default {
     name      : 'Languages',
@@ -137,6 +145,7 @@
 
     mounted() {
       this.loadLanguages()
+      this.loadPlatforms()
     },
 
     data() {
@@ -145,7 +154,8 @@
         showAssigneesModal: false,
         selectedLanguage  : -1,
         languages         : [],
-        search            : ''
+        search            : '',
+        platforms         : []
       }
     },
 
@@ -158,6 +168,15 @@
             }
           })
           this.languages = data.data
+        } catch (e) {
+          console.error(e)
+        }
+      },
+
+      async loadPlatforms() {
+        try {
+          const {data}   = await axios.get('/web/platforms', {limit: 100})
+          this.platforms = data.data.map(platform => ({label: platform.name, value: platform.id}))
         } catch (e) {
           console.error(e)
         }
@@ -186,7 +205,10 @@
           event.done()
         } catch (e) {
           if (e.response && e.response.status === 422) {
-            alert(e.response.message)
+            const errors = new Errors(e.response.data)
+            if (errors.has(field)) {
+              event.error(errors.first(field))
+            }
           } else {
             alert('Unable to update language')
           }

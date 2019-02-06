@@ -27,7 +27,7 @@
                 </small>
             </div>
 
-            <div class="form-group limit-width">
+            <div class="form-group limit-width mb-0">
                 <label for="password_confirmation" class="form-label">Password Confirmation</label>
                 <input type="password"
                        :class="['form-control', {'is-invalid': form.errors.has('password_confirmation')}]"
@@ -40,7 +40,7 @@
                 </small>
             </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer border-0">
             <button class="btn btn-primary" type="submit">Update Password</button>
         </div>
     </form>

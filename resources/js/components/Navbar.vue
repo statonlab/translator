@@ -4,7 +4,7 @@
             <h1 class="navbar-text mb-0 font-weight-bold text-dark h5">
                 {{ title }}
             </h1>
-            <ul class="navbar-nav ml-auto align-items-center">
+            <ul class="navbar-nav ml-auto align-items-center flex-row">
                 <li class="nav-item">
                     <router-link
                             to="/profile"
@@ -17,7 +17,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="/logout" class="nav-link">
-                        <ion-icon name="log-out"></ion-icon>
+                        <ion-icon name="md-log-out"></ion-icon>
                     </a>
                 </li>
             </ul>
