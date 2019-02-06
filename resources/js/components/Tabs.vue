@@ -7,7 +7,7 @@
                         <a :href="tab.href"
                            :class="['nav-link', {'active' : tab.isActive}]"
                            @click="selectTab(tab)">
-                            <ion-icon v-if="tab.icon.length > 0" :name="tab.icon"></ion-icon>
+                            <ion-icon v-if="tab.icon ? tab.icon.length > 0 : false" :name="tab.icon"></ion-icon>
                             <span>{{ tab.name }}</span>
                         </a>
                     </li>
@@ -29,7 +29,6 @@
     },
 
     created() {
-      this.tabs = this.$children
     },
 
     methods: {
@@ -41,6 +40,8 @@
     },
 
     mounted() {
+      this.tabs = this.$children.concat([])
+
       this.tabs.forEach(tab => {
         if (this.$route.hash === tab.href) {
           this.selectTab(tab)

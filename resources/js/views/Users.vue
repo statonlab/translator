@@ -15,7 +15,7 @@
                 <div class="ml-auto">
                     <button class="d-flex btn btn-primary btn-sm font-weight-bold"
                             @click.prevent="addUserModal = true">
-                        <ion-icon name="add"></ion-icon>
+                        <ion-icon name="md-add"></ion-icon>
                         <span class="d-inline-block ml-1">New User</span>
                     </button>
                 </div>
@@ -83,7 +83,7 @@
                         <td class="text-right">
                             <button type="button"
                                     @click="destroy(user)"
-                                    class="btn btn-outline-danger btn-sm">
+                                    class="btn btn-outline-danger btn-sm ml-auto">
                                 <ion-icon name="trash"></ion-icon>
                             </button>
                         </td>
@@ -182,11 +182,16 @@
         try {
           let data       = {}
           data[field]    = event.value
-          const response = await axios.patch(`/web/user/${user.id}`, data)
+          await axios.patch(`/web/user/${user.id}`, data)
           this.loadUsers()
           event.done()
         } catch (e) {
-          alert('Could not update field')
+          const errors = new Errors(e.response.data)
+          if (errors.has(field)) {
+            event.error(errors.first(field))
+          } else {
+            alert('Could not update field')
+          }
         }
         this.editing = false
       },

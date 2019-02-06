@@ -2002,22 +2002,22 @@ pre code {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: #6c757d;
+  color: #adb5bd;
   opacity: 1;
 }
 
 .form-control:-ms-input-placeholder {
-  color: #6c757d;
+  color: #adb5bd;
   opacity: 1;
 }
 
 .form-control::-ms-input-placeholder {
-  color: #6c757d;
+  color: #adb5bd;
   opacity: 1;
 }
 
 .form-control::placeholder {
-  color: #6c757d;
+  color: #adb5bd;
   opacity: 1;
 }
 
@@ -6894,8 +6894,11 @@ button.bg-dark:focus {
 }
 
 .d-inline-flex,
-.nav:not(.flex-column) .nav-link ion-icon + span,
-.nav:not(.flex-column) .nav-link {
+.btn .icon + span,
+.btn .icon,
+.nav:not(.flex-column) .nav-link .icon + span,
+.nav:not(.flex-column) .nav-link,
+.sidebar .nav .icon {
   display: inline-flex !important;
 }
 
@@ -8078,6 +8081,7 @@ button.bg-dark:focus {
 }
 
 .mb-0,
+.card-title,
 .my-0 {
   margin-bottom: 0 !important;
 }
@@ -8108,6 +8112,7 @@ button.bg-dark:focus {
 }
 
 .ml-1,
+.btn .icon + span,
 .mx-1 {
   margin-left: 0.25rem !important;
 }
@@ -8132,7 +8137,7 @@ button.bg-dark:focus {
 }
 
 .ml-2,
-.nav:not(.flex-column) .nav-link ion-icon + span,
+.nav:not(.flex-column) .nav-link .icon + span,
 .mx-2 {
   margin-left: 0.5rem !important;
 }
@@ -8282,7 +8287,7 @@ button.bg-dark:focus {
 }
 
 .pl-2,
-.main-navbar ion-icon,
+.main-navbar .icon,
 .px-2 {
   padding-left: 0.5rem !important;
 }
@@ -10630,7 +10635,7 @@ body {
   margin-left: 250px;
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: 991.98px) {
   .main-content {
     margin-left: 0;
   }
@@ -10672,6 +10677,40 @@ ion-icon {
 
 .item-striped:nth-of-type(even) {
   background-color: #f4f5f7;
+}
+
+.is-spinning {
+  display: inline-block;
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 1000ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(359deg);
+            transform: rotate(359deg);
+  }
 }
 
 .logo {
@@ -10718,20 +10757,20 @@ ion-icon {
   transition: left 0.3s linear;
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: 991.98px) {
   .sidebar {
     left: -250px;
   }
 }
 
-.sidebar .nav ion-icon {
+.sidebar .nav .icon {
   width: 30px;
   text-align: center;
   margin-top: 1px;
   font-size: 20px;
 }
 
-.sidebar .nav ion-icon.ml-auto {
+.sidebar .nav .icon.ml-auto {
   transition: -webkit-transform 0.3s linear;
   transition: transform 0.3s linear;
   transition: transform 0.3s linear, -webkit-transform 0.3s linear;
@@ -10763,8 +10802,8 @@ ion-icon {
   color: #343a40;
 }
 
-.sidebar .nav .router-link-active ion-icon.ml-auto,
-.sidebar .nav .active ion-icon.ml-auto {
+.sidebar .nav .router-link-active .icon.ml-auto,
+.sidebar .nav .active .icon.ml-auto {
   -webkit-transform: rotate(-90deg);
           transform: rotate(-90deg);
 }
@@ -10773,7 +10812,7 @@ ion-icon {
   height: 57px;
 }
 
-.main-navbar ion-icon {
+.main-navbar .icon {
   font-size: 1.2rem;
 }
 
@@ -10811,12 +10850,16 @@ ion-icon {
   color: #343a40;
 }
 
+.nav:not(.flex-column) .nav-link .icon {
+  font-size: 20px;
+}
+
 .card-header {
   background-color: #f2f4f6;
 }
 
-.btn ion-icon {
-  font-size: 22px;
+.btn .icon {
+  font-size: 20px;
 }
 
 .modal {

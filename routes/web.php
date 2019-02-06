@@ -75,4 +75,5 @@ Route::group([
     Route::get('/web/platform/{platform}', 'PlatformsController@show');
     Route::put('/web/platform/{platform}', 'PlatformsController@update');
     Route::delete('/web/platform/{platform}', 'PlatformsController@delete');
+    Route::patch('/web/platform/{platform}', 'PlatformsController@patch');
 });

@@ -13,6 +13,7 @@ class Language extends Model
         'language',
         'image',
         'language_code',
+        'platform_id',
     ];
 
     /**

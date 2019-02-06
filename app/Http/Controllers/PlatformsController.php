@@ -35,6 +35,8 @@ class PlatformsController extends Controller
             $platforms->orWhere('name', 'like', "%$request->search%");
         }
 
+        $platforms->orderBy('name', 'asc');
+
         return $this->success($platforms->paginate($request->limit ?: 10));
     }
 
@@ -111,5 +113,29 @@ class PlatformsController extends Controller
         $platform->delete();
 
         return $this->created('Platform deleted');
+    }
+
+    /**
+     * Update a single field.
+     *
+     * @param \App\Platform $platform
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function patch(Platform $platform, Request $request)
+    {
+        $this->authorize('update', $platform);
+
+        $this->validate($request, [
+            'name' => 'required|max:200|unique:platforms,name',
+        ]);
+
+        $platform->fill($request->only('name'))->save();
+
+        $platform->load('languages');
+
+        return $this->created($platform);
     }
 }

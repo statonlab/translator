@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Language;
+use App\Platform;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -71,10 +72,13 @@ class LanguagesAPITest extends TestCase
 
         $this->actingAs($user);
 
+        $platform = factory(Platform::class)->create();
+
         $response = $this->post('/web/languages', [
             'language' => 'English',
             'language_code' => 'en-US',
             'image' => '/img/test.png',
+            'platform_id' => $platform->id,
         ]);
 
         $response->assertSuccessful();
@@ -99,6 +103,7 @@ class LanguagesAPITest extends TestCase
         $response->assertSuccessful();
     }
 
+    /** @test */
     public function testNonAdminCantToggleAssignment()
     {
         $user = $this->makeUser();
@@ -115,6 +120,7 @@ class LanguagesAPITest extends TestCase
         $response->assertForbidden();
     }
 
+    /** @test */
     public function testThatAdminsCanToggleAssignment()
     {
         $admin = $this->makeAdminUser();

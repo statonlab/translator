@@ -5,3 +5,7 @@
 
   background-color: darken($gray-100, 2%);
 }
+
+.card-title {
+  @extend .mb-0;
+}

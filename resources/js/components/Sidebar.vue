@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import User from '../helpers/User'
   export default {
     name: 'Sidebar',
 
@@ -51,21 +52,26 @@
             path : '/',
             exact: true
           },
+          ...(User.isAdmin() ? [{
+            title: 'Platforms',
+            icon : 'ios-apps',
+            path : '/platforms'
+          }] : []),
           {
             title: 'Translations',
             icon : 'filing',
             path : '/translate'
           },
-          {
+          ...(User.isAdmin() ? [{
             title: 'Languages',
-            icon : 'copy',
+            icon : 'ios-copy',
             path : '/languages'
-          },
-          {
+          }] : []),
+          ...(User.isAdmin() ? [{
             title: 'Users',
             icon : 'contacts',
             path : '/users'
-          }
+          }] : [])
         ],
 
         filteredLinks: []

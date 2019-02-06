@@ -7,5 +7,6 @@ $factory->define(\App\Language::class, function (Faker $faker) {
         'language' => $faker->languageCode,
         'language_code' => $faker->languageCode,
         'image' => null,
+        'platform_id' => factory(\App\Platform::class)->create()->id,
     ];
 });

@@ -25,12 +25,17 @@ class LanguagesController extends Controller
             'search' => 'nullable|max:255',
         ]);
 
-        $languages = Language::with('users');
+        $languages = Language::with(['users', 'platform']);
 
         if ($request->search) {
             $languages->whereHas('users', function ($query) use ($request) {
                 /** @var \Illuminate\Database\Query\Builder $query */
                 $query->where('users.name', 'like', "%{$request->search}%");
+            });
+
+            $languages->orWhereHas('platform', function ($query) use ($request) {
+                /** @var \Illuminate\Database\Query\Builder $query */
+                $query->where('platforms.name', 'like', "%{$request->search}%");
             });
 
             $languages->orWhere(function ($query) use ($request) {
@@ -61,12 +66,14 @@ class LanguagesController extends Controller
             'language' => 'required|max:100',
             'language_code' => 'required|max:10',
             'image' => 'nullable|max:255',
+            'platform_id' => 'required|int|exists:platforms,id',
         ]);
 
         return $this->success(Language::create($request->only([
             'language',
             'language_code',
             'image',
+            'platform_id',
         ])));
     }
 
@@ -101,9 +108,15 @@ class LanguagesController extends Controller
             'language' => 'nullable|max:100',
             'language_code' => 'nullable|max:10',
             'image' => 'nullable|max:255',
+            'platform_id' => 'nullable|int|exists:platforms,id',
         ]);
 
-        $language->fill($request->only(['language', 'language_code', 'image']))->save();
+        $language->fill($request->only([
+            'language',
+            'language_code',
+            'image',
+            'platform_id',
+        ]))->save();
 
         $language->load('users');
 

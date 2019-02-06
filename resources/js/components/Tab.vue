@@ -11,7 +11,7 @@
     props: {
       name    : {required: true, type: String},
       selected: {required: false, default: false, type: Boolean},
-      icon: {required: false, type: String, default: ''}
+      icon    : {required: false, type: String, default: ''}
     },
 
     data() {

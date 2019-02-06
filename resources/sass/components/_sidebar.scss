@@ -9,14 +9,15 @@
   background-color: $sidebar-bg-color;
   color: $sidebar-text-color;
 
-  @include media-breakpoint-down(lg) {
+  @include media-breakpoint-down(md) {
     left: -$sidebar-width;
   }
 
   transition: left .3s linear;
 
   .nav {
-    ion-icon {
+    .icon {
+      @extend .d-inline-flex;
       width: 30px;
       text-align: center;
       margin-top: 1px;
@@ -57,7 +58,7 @@
         color: $dark;
       }
 
-      ion-icon.ml-auto {
+      .icon.ml-auto {
         transform: rotate(-90deg);
       }
 

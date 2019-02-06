@@ -17,8 +17,10 @@ import Users from './views/Users'
 import Translate from './views/Translate'
 import Languages from './views/Languages'
 import Profile from './views/Profile'
+import Platforms from './views/Platforms'
+import IonIcon from './components/IonIcon'
 
-Vue.config.ignoredElements = [/^ion-/]
+// Vue.config.ignoredElements = [/^ion-/]
 
 // Register VueRouter
 Vue.use(VueRouter)
@@ -32,7 +34,8 @@ const routes = [
   {path: '/users', component: Users},
   {path: '/translate', component: Translate},
   {path: '/languages', component: Languages},
-  {path: '/profile', component: Profile}
+  {path: '/profile', component: Profile},
+  {path: '/platforms', component: Platforms}
 ]
 
 // 3. Create the router instance and pass the `routes` option
@@ -48,6 +51,8 @@ const router = new VueRouter({
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+Vue.component('ion-icon', IonIcon)
 
 new Vue({
   router,
