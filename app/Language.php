@@ -22,4 +22,12 @@ class Language extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function platform()
+    {
+        return $this->belongsTo(Platform::class);
+    }
 }

@@ -30,6 +30,7 @@ Route::group([
     Route::get('/translate', 'HomeController@index');
     Route::get('/languages', 'HomeController@index');
     Route::get('/profile', 'HomeController@index');
+    Route::get('/platforms', 'HomeController@index');
 
     // Logout
     Route::get('/logout', 'Auth\\LoginController@logout');
@@ -68,4 +69,10 @@ Route::group([
     Route::post('/web/language/{language}/user', 'LanguagesController@toggleAssignment');
     Route::get('/web/language/{language}/users', 'LanguagesController@users');
 
+    // Platforms
+    Route::get('/web/platforms', 'PlatformsController@index');
+    Route::post('/web/platforms', 'PlatformsController@create');
+    Route::get('/web/platform/{platform}', 'PlatformsController@show');
+    Route::put('/web/platform/{platform}', 'PlatformsController@update');
+    Route::delete('/web/platform/{platform}', 'PlatformsController@delete');
 });
