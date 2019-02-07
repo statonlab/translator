@@ -85,6 +85,14 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item d-flex align-items-center"
                                        href="#"
+                                       @click.prevent="addFile(language)">
+                                        <span class="icon d-inline-flex mr-2">
+                                            <ion-icon name="cloud-upload"></ion-icon>
+                                        </span>
+                                        <span>Upload File</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center"
+                                       href="#"
                                        @click.prevent="manageAssignees(language)">
                                         <span class="icon d-inline-flex mr-2">
                                             <ion-icon name="contacts"></ion-icon>
@@ -122,6 +130,10 @@
                     @close="showAssigneesModal = false"
                     :language="selectedLanguage"/>
         </modal>
+
+        <modal @close="showAddFileModal = false" v-if="showAddFileModal">
+            <LanguageFileForm @close="showAddFileModal = false"/>
+        </modal>
     </div>
 </template>
 
@@ -132,10 +144,11 @@
   import Editable from '../components/Editable'
   import LanguageAssigneesForm from '../forms/LanguageAssigneesForm'
   import Errors from '../forms/Errors'
+  import LanguageFileForm from '../forms/LanguageFileForm'
 
   export default {
     name      : 'Languages',
-    components: {LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
+    components: {LanguageFileForm, LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
 
     watch: {
       search() {
@@ -155,7 +168,8 @@
         selectedLanguage  : -1,
         languages         : [],
         search            : '',
-        platforms         : []
+        platforms         : [],
+        showAddFileModal  : false
       }
     },
 
@@ -188,12 +202,12 @@
 
       manageAssignees(language) {
         this.selectedLanguage   = language
-        this.showAssigneesModal = true
+        setTimeout(() => this.showAssigneesModal = true, 50)
       },
 
       languageCreated() {
         this.loadLanguages()
-        this.showCreateModal = false
+        setTimeout(() => this.showCreateModal = true, 50)
       },
 
       async patch(language, field, event) {
@@ -248,6 +262,11 @@
 
           return l
         })
+      },
+
+      addFile(language) {
+        this.selectedLanguage = language
+        setTimeout(() => this.showAddFileModal = true, 50)
       }
     }
   }
