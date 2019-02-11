@@ -47,7 +47,11 @@
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-between">
-                <button class="btn btn-link" type="button" @click="$emit('close')">Close</button>
+                <button :class="['btn', 'btn-link', {'disabled': loading}]"
+                        type="button"
+                        @click="$emit('close')"
+                        :disabled="loading">Close
+                </button>
                 <button class="btn btn-primary" type="submit">Upload</button>
             </div>
         </div>
@@ -69,7 +73,8 @@
           file       : [],
           platform_id: -1
         }),
-        progress: 0
+        progress: 0,
+        loading : false
       }
     },
 
@@ -87,6 +92,7 @@
       },
 
       async save() {
+        this.loading  = true
         this.progress = 0
         try {
           const response = await this.form.post('/web/files')
@@ -96,6 +102,7 @@
           console.error(e)
         }
         this.progress = 0
+        this.loading  = false
       },
 
       updateProgress(event) {

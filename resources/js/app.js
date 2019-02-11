@@ -37,7 +37,7 @@ const routes = [
   {path: '/languages', component: Languages},
   {path: '/profile', component: Profile},
   {path: '/platforms', component: Platforms},
-  {path: '/platform/{id}/files', component: PlatformFiles}
+  {path: '/platform/:id/files', component: PlatformFiles}
 ]
 
 // 3. Create the router instance and pass the `routes` option

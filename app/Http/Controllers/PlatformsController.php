@@ -147,4 +147,34 @@ class PlatformsController extends Controller
 
         return $this->created($platform);
     }
+
+    /**
+     * List files for a platform.
+     *
+     * @param \App\Platform $platform
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function files(Platform $platform, Request $request)
+    {
+        $this->authorize('view', $platform);
+
+        $this->validate($request, [
+            'limit' => 'nullable|int|min:6|max:100',
+            'search' => 'nullable|max:255',
+        ]);
+
+        $files = $platform->files()->orderBy('id', 'desc');
+
+        if (! empty($request->search)) {
+            $files->where('app_version', 'like', "%$request->search%");
+        }
+
+        return $this->success([
+            'platform' => $platform,
+            'files' => $files->paginate($request->limit ?: 15),
+        ]);
+    }
 }

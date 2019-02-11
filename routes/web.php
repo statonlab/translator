@@ -84,4 +84,10 @@ Route::group([
     Route::post('/web/files', 'FilesController@create');
     Route::put('/web/file/{file}', 'FilesController@update');
     Route::delete('/web/file/{file}', 'FilesController@delete');
+
+    // Platform files
+    Route::get('/web/platform/{platform}/files', 'PlatformsController@files');
+
+    // Downloads
+    Route::get('/download/file/{file}', 'FilesController@download');
 });

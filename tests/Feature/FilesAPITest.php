@@ -165,4 +165,26 @@ class FilesAPITest extends TestCase
         $helper = new FileHelper($file->path);
         Storage::disk('files')->assertMissing($helper->name());
     }
+
+    public function testThatAdminsCanDownloadAFile()
+    {
+        $this->actingAs($this->makeAdminUser());
+
+        Storage::fake('files');
+
+        // Create a file
+        $file_name = uniqid().'.json';
+
+        $response = $this->post('/web/files', [
+            'app_version' => 'v1.0.0',
+            'platform_id' => factory(Platform::class)->create()->id,
+            'file' => UploadedFile::fake()->create($file_name),
+        ]);
+
+        $response->assertSuccessful();
+
+        $file = $response->json();
+
+        $this->get("/download/file/{$file['id']}")->assertSuccessful();
+    }
 }

@@ -12,7 +12,7 @@ interface SerializerInterface
      * The serialized data goes into the database.
      *
      * @param \App\File $file
-     * @return mixed
+     * @return array
      */
-    public function serialize(File $file);
+    public function serialize(File $file): array;
 }
