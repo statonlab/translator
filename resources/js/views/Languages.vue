@@ -11,7 +11,7 @@
 
                 <div class="ml-auto">
                     <button class="d-flex btn btn-primary btn-sm font-weight-bold"
-                            @click.prevent="showCreateModal = true">
+                            @click.prevent.stop="openCreateModal()">
                         <ion-icon name="add"></ion-icon>
                         <span class="d-inline-block ml-1">New Language</span>
                     </button>
@@ -74,41 +74,22 @@
                             <span v-if="language.users.length === 0">None</span>
                         </td>
                         <td>
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary btn-sm ml-auto"
-                                        type="button"
-                                        data-toggle="dropdown"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <ion-icon name="reorder" class="d-inline-flex"></ion-icon>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item d-flex align-items-center"
-                                       href="#"
-                                       @click.prevent="addFile(language)">
-                                        <span class="icon d-inline-flex mr-2">
-                                            <ion-icon name="cloud-upload"></ion-icon>
-                                        </span>
-                                        <span>Upload File</span>
-                                    </a>
-                                    <a class="dropdown-item d-flex align-items-center"
-                                       href="#"
-                                       @click.prevent="manageAssignees(language)">
-                                        <span class="icon d-inline-flex mr-2">
-                                            <ion-icon name="contacts"></ion-icon>
-                                        </span>
-                                        <span>Manage Assignees</span>
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item d-flex align-items-center text-danger"
-                                       href="#"
-                                       @click.prevent="destroy(language)">
-                                        <span class="icon d-inline-flex mr-2">
-                                            <ion-icon name="trash" class="d-inline-flex"></ion-icon>
-                                        </span>
-                                        <span>Delete</span>
-                                    </a>
-                                </div>
+                            <div class="d-flex justify-content-end align-items-center">
+                                <a class="btn btn-outline-primary btn-sm mr-2"
+                                   href="#"
+                                   @click.prevent="manageAssignees(language)">
+                                    <span class="icon d-inline-flex mr-2">
+                                        <ion-icon name="contacts"></ion-icon>
+                                    </span>
+                                    <span>Assignees</span>
+                                </a>
+                                <a class="btn btn-outline-danger btn-sm"
+                                   href="#"
+                                   @click.prevent="destroy(language)">
+                                    <span class="icon d-inline-flex">
+                                        <ion-icon name="trash" class="d-inline-flex"></ion-icon>
+                                    </span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -129,10 +110,6 @@
                     @toggle="toggleAssignment($event)"
                     @close="showAssigneesModal = false"
                     :language="selectedLanguage"/>
-        </modal>
-
-        <modal @close="showAddFileModal = false" v-if="showAddFileModal">
-            <LanguageFileForm @close="showAddFileModal = false"/>
         </modal>
     </div>
 </template>
@@ -201,13 +178,13 @@
       },
 
       manageAssignees(language) {
-        this.selectedLanguage   = language
+        this.selectedLanguage = language
         setTimeout(() => this.showAssigneesModal = true, 50)
       },
 
       languageCreated() {
         this.loadLanguages()
-        setTimeout(() => this.showCreateModal = true, 50)
+        this.showCreateModal = false
       },
 
       async patch(language, field, event) {
@@ -264,9 +241,9 @@
         })
       },
 
-      addFile(language) {
-        this.selectedLanguage = language
-        setTimeout(() => this.showAddFileModal = true, 50)
+      openCreateModal() {
+        this.showCreateModal = true
+        // setTimeout(() => , 50)
       }
     }
   }

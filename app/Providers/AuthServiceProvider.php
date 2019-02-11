@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\File;
 use App\Language;
 use App\Platform;
+use App\Policies\FilePolicy;
 use App\Policies\LanguagePolicy;
 use App\Policies\PlatformPolicy;
 use App\Policies\UserPolicy;
@@ -21,7 +23,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => UserPolicy::class,
         Language::class => LanguagePolicy::class,
-        Platform::class => PlatformPolicy::class
+        Platform::class => PlatformPolicy::class,
+        File::class => FilePolicy::class
     ];
 
     /**

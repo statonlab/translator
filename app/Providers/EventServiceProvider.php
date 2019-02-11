@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\FileCreated;
+use App\Listeners\SerializeLanguageFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -15,9 +17,13 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
+        FileCreated::class => [
+            SerializeLanguageFile::class,
+        ],
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
     ];
 
     /**
@@ -28,7 +34,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
         //
     }
 }

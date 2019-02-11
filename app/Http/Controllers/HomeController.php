@@ -9,9 +9,10 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
+     * @param string $any Nullable parameters that vue can handle
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index($any = null)
     {
         $user = auth()->user();
 

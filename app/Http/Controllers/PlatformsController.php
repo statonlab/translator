@@ -15,6 +15,8 @@ class PlatformsController extends Controller
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function index(Request $request)
     {
@@ -25,7 +27,7 @@ class PlatformsController extends Controller
             'limit' => 'nullable|int|min:6|max:100',
         ]);
 
-        $platforms = Platform::withCount('languages');
+        $platforms = Platform::withCount(['languages', 'files']);
 
         if (! empty($request->search)) {
             $platforms->whereHas('languages', function ($query) use ($request) {
@@ -45,6 +47,8 @@ class PlatformsController extends Controller
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function create(Request $request)
     {
@@ -68,6 +72,7 @@ class PlatformsController extends Controller
      *
      * @param  \App\Platform $platform
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Platform $platform)
     {
@@ -84,6 +89,8 @@ class PlatformsController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param  \App\Platform $platform
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update(Request $request, Platform $platform)
     {
@@ -105,6 +112,8 @@ class PlatformsController extends Controller
      *
      * @param  \App\Platform $platform
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function delete(Platform $platform)
     {

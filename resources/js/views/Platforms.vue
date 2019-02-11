@@ -23,6 +23,7 @@
                     <tr>
                         <th>Platform Name</th>
                         <th>Number of Languages</th>
+                        <th>Number of Files</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -36,12 +37,25 @@
                             </editable>
                         </td>
                         <td>{{ platform.languages_count }}</td>
-                        <td class="text-right">
-                            <button class="btn btn-outline-danger btn-sm ml-auto"
-                                    type="button"
-                                    @click="destroy(platform)">
-                                <ion-icon name="trash"/>
-                            </button>
+                        <td>
+                            <router-link :to="`/files/${platform.id}`">
+                                {{ platform.files_count }}
+                            </router-link>
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-outline-primary btn-sm mr-2" @click="addFile(platform)">
+                                    <span class="icon d-inline-flex mr-2">
+                                        <ion-icon name="cloud-upload"></ion-icon>
+                                    </span>
+                                    <span>Language File</span>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm"
+                                        type="button"
+                                        @click="destroy(platform)">
+                                    <ion-icon name="trash"/>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -55,6 +69,14 @@
                     @create="platformCreated()"
             />
         </modal>
+
+        <modal v-if="showLanguageForm" @close="showLanguageForm = false">
+            <language-file-form
+                    @create="fileUploaded($event)"
+                    :platform="platform"
+                    @close="showLanguageForm = false"
+            />
+        </modal>
     </div>
 </template>
 
@@ -63,19 +85,22 @@
   import PlatformForm from '../forms/PlatformForm'
   import Editable from '../components/Editable'
   import Errors from '../forms/Errors'
+  import LanguageFileForm from '../forms/LanguageFileForm'
 
   export default {
     name      : 'Platforms',
-    components: {Editable, PlatformForm, Modal},
+    components: {LanguageFileForm, Editable, PlatformForm, Modal},
     mounted() {
       this.loadPlatforms()
     },
 
     data() {
       return {
-        search         : '',
-        showCreateModal: false,
-        platforms      : []
+        search          : '',
+        showCreateModal : false,
+        platforms       : [],
+        showLanguageForm: false,
+        platform        : null
       }
     },
 
@@ -136,6 +161,15 @@
             alert('Unable to update platform')
           }
         }
+      },
+
+      addFile(platform) {
+        this.platform         = platform
+        this.showLanguageForm = true
+      },
+
+      fileUploaded(file) {
+        this.showLanguageForm = false
       }
     }
   }

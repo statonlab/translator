@@ -1,17 +1,18 @@
 <template>
-    <out-click @outClick="outClick()">
+    <out-click @outClick="outClick($event)">
         <div>
             <div class="editable" @click="show()">
-                <slot v-if="!editing"></slot>
+                <div v-show="!editing">
+                    <slot></slot>
+                </div>
             </div>
             <form @submit.prevent="save()" v-if="editing">
                 <div class="input-group">
                     <input v-if="type !== 'select'"
                            @keydown="error = ''"
-                           :type="type === 'password' ? 'password' : 'text'"
+                           :type="type"
                            :class="['form-control', {'is-invalid': error.length > 0}]"
                            name="Edit"
-                           id="text-edit"
                            title="Edit"
                            v-model="content"
                            :disabled="disabled"
@@ -19,7 +20,6 @@
                     <select v-if="type === 'select'"
                             @click="error = ''"
                             name="edit"
-                            id="select-edit"
                             v-model="content"
                             :class="['form-control', 'custom-select', {'is-invalid': error.length > 0}]">
                         <option v-for="option in options" :value="option.value">
@@ -83,8 +83,12 @@
         }
       },
 
-      outClick() {
+      outClick(event) {
         if (this.content !== this.value) {
+          return
+        }
+
+        if (this.editing !== true) {
           return
         }
 

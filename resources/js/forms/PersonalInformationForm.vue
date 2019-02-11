@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submit()" @keydown="form.errors.clear($event.target.name)">
+    <form @submit.prevent="submit()" @keydown="form.keydown($event.target.name)">
         <div class="card-body">
             <div class="form-group limit-width">
                 <label for="name" class="form-label">Name</label>

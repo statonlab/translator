@@ -22,8 +22,8 @@
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.17.0",
         "sass-loader": "^7.1.0",
-        "vue": "^2.6.2",
-        "vue-template-compiler": "^2.6.2"
+        "vue": "^2.6.3",
+        "vue-template-compiler": "^2.6.3"
     },
     "dependencies": {
         "apexcharts": "^3.2.2",
