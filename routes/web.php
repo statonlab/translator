@@ -31,6 +31,7 @@ Route::group([
     Route::get('/languages', 'HomeController@index');
     Route::get('/profile', 'HomeController@index');
     Route::get('/platforms', 'HomeController@index');
+    Route::get('/platform/{platform}/files', 'HomeController@index');
 
     // Logout
     Route::get('/logout', 'Auth\\LoginController@logout');
@@ -76,4 +77,11 @@ Route::group([
     Route::put('/web/platform/{platform}', 'PlatformsController@update');
     Route::delete('/web/platform/{platform}', 'PlatformsController@delete');
     Route::patch('/web/platform/{platform}', 'PlatformsController@patch');
+
+    // Files
+    Route::get('/web/files', 'FilesController@index');
+    Route::get('/web/file/{file}', 'FilesController@show');
+    Route::post('/web/files', 'FilesController@create');
+    Route::put('/web/file/{file}', 'FilesController@update');
+    Route::delete('/web/file/{file}', 'FilesController@delete');
 });

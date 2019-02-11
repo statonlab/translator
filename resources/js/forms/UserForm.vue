@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submit" @keydown="form.errors.clear($event.target.name)">
+    <form @submit.prevent="submit" @keydown="form.keydown($event.target.name)">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Create User</h5>

@@ -11,7 +11,7 @@
 
                 <div class="ml-auto">
                     <button class="d-flex btn btn-primary btn-sm font-weight-bold"
-                            @click.prevent="showCreateModal = true">
+                            @click.prevent.stop="openCreateModal()">
                         <ion-icon name="add"></ion-icon>
                         <span class="d-inline-block ml-1">New Language</span>
                     </button>
@@ -74,33 +74,22 @@
                             <span v-if="language.users.length === 0">None</span>
                         </td>
                         <td>
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary btn-sm ml-auto"
-                                        type="button"
-                                        data-toggle="dropdown"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <ion-icon name="reorder" class="d-inline-flex"></ion-icon>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item d-flex align-items-center"
-                                       href="#"
-                                       @click.prevent="manageAssignees(language)">
-                                        <span class="icon d-inline-flex mr-2">
-                                            <ion-icon name="contacts"></ion-icon>
-                                        </span>
-                                        <span>Manage Assignees</span>
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item d-flex align-items-center text-danger"
-                                       href="#"
-                                       @click.prevent="destroy(language)">
-                                        <span class="icon d-inline-flex mr-2">
-                                            <ion-icon name="trash" class="d-inline-flex"></ion-icon>
-                                        </span>
-                                        <span>Delete</span>
-                                    </a>
-                                </div>
+                            <div class="d-flex justify-content-end align-items-center">
+                                <a class="btn btn-outline-primary btn-sm mr-2"
+                                   href="#"
+                                   @click.prevent="manageAssignees(language)">
+                                    <span class="icon d-inline-flex mr-2">
+                                        <ion-icon name="contacts"></ion-icon>
+                                    </span>
+                                    <span>Assignees</span>
+                                </a>
+                                <a class="btn btn-outline-danger btn-sm"
+                                   href="#"
+                                   @click.prevent="destroy(language)">
+                                    <span class="icon d-inline-flex">
+                                        <ion-icon name="trash" class="d-inline-flex"></ion-icon>
+                                    </span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -132,10 +121,11 @@
   import Editable from '../components/Editable'
   import LanguageAssigneesForm from '../forms/LanguageAssigneesForm'
   import Errors from '../forms/Errors'
+  import LanguageFileForm from '../forms/LanguageFileForm'
 
   export default {
     name      : 'Languages',
-    components: {LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
+    components: {LanguageFileForm, LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
 
     watch: {
       search() {
@@ -155,7 +145,8 @@
         selectedLanguage  : -1,
         languages         : [],
         search            : '',
-        platforms         : []
+        platforms         : [],
+        showAddFileModal  : false
       }
     },
 
@@ -187,8 +178,8 @@
       },
 
       manageAssignees(language) {
-        this.selectedLanguage   = language
-        this.showAssigneesModal = true
+        this.selectedLanguage = language
+        setTimeout(() => this.showAssigneesModal = true, 50)
       },
 
       languageCreated() {
@@ -248,6 +239,11 @@
 
           return l
         })
+      },
+
+      openCreateModal() {
+        this.showCreateModal = true
+        // setTimeout(() => , 50)
       }
     }
   }

@@ -49,7 +49,7 @@
           const response = await this.form.post('/web/platforms')
           this.$emit('create', response)
         } catch (e) {
-          console.log(e)
+          console.error(e)
         }
       }
     }

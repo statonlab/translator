@@ -12,16 +12,28 @@
   export default {
     name: 'Modal',
 
+    data() {
+      return {
+        mounted: false
+      }
+    },
+
     mounted() {
       document.addEventListener('click', this.outClick)
+      setTimeout(() => this.mounted = true, 50)
     },
 
     destroyed() {
+      this.mounted = false
       document.removeEventListener('click', this.outClick)
     },
 
     methods: {
       outClick(e) {
+        if(!this.mounted) {
+          return
+        }
+
         if(this.$refs.modal.contains(e.target)) {
           return
         }

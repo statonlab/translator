@@ -19,6 +19,7 @@ import Languages from './views/Languages'
 import Profile from './views/Profile'
 import Platforms from './views/Platforms'
 import IonIcon from './components/IonIcon'
+import PlatformFiles from './views/PlatformFiles'
 
 // Vue.config.ignoredElements = [/^ion-/]
 
@@ -35,7 +36,8 @@ const routes = [
   {path: '/translate', component: Translate},
   {path: '/languages', component: Languages},
   {path: '/profile', component: Profile},
-  {path: '/platforms', component: Platforms}
+  {path: '/platforms', component: Platforms},
+  {path: '/platform/{id}/files', component: PlatformFiles}
 ]
 
 // 3. Create the router instance and pass the `routes` option
