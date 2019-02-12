@@ -15,10 +15,13 @@ class CreateTranslatedLinesTable extends Migration
     {
         Schema::create('translated_lines', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->comment('Last modified by this user');
+            $table->unsignedInteger('user_id')->nullable()->comment('Last modified by this user');
             $table->unsignedInteger('serialized_line_id');
             $table->unsignedInteger('language_id');
+            $table->unsignedInteger('file_id');
+            $table->string('key')->index();
             $table->string('value')->nullable()->index();
+            $table->boolean('needs_updating')->default(0);
             $table->timestamps();
 
             $table->foreign('serialized_line_id')
@@ -34,6 +37,11 @@ class CreateTranslatedLinesTable extends Migration
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreign('file_id')
+                ->references('id')
+                ->on('files')
                 ->onDelete('cascade');
         });
     }

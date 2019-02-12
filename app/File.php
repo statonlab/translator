@@ -27,4 +27,24 @@ class File extends Model
     {
         return $this->belongsTo(Platform::class);
     }
+
+    /**
+     * Get all serialized lines.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function serializedLines()
+    {
+        return $this->hasMany(SerializedLine::class);
+    }
+
+    /**
+     * Get all translated lines.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function translatedLines()
+    {
+        return $this->hasMany(TranslatedLine::class);
+    }
 }
