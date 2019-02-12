@@ -35,6 +35,16 @@ class TranslatedLine extends Model
     }
 
     /**
+     * Get the parent serialized line.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function serializedLine()
+    {
+        return $this->belongsTo(SerializedLine::class);
+    }
+
+    /**
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return mixed
      */

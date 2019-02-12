@@ -45,13 +45,14 @@ trait Responds
     /**
      * @param $message
      * @param array $data
+     * @param int $status
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function error($message, $data = [])
+    protected function error($message, $data = [], $status = 422)
     {
         return JsonResponse::create([
             'message' => $message,
             'errors' => $data,
-        ], 422);
+        ], $status);
     }
 }

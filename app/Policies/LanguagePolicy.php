@@ -97,7 +97,20 @@ class LanguagePolicy
      * @param \App\Language $language
      * @return bool
      */
-    public function assign(User $user, Language $language) {
+    public function assign(User $user, Language $language)
+    {
         return $user->isAdmin();
+    }
+
+    /**
+     * @param \App\User $user
+     * @param \App\Language $language
+     * @return bool
+     */
+    public function translate(User $user, Language $language)
+    {
+        return $user->isAdmin() || $language->users()
+                ->where('users.id', $user->id)
+                ->count() > 0;
     }
 }

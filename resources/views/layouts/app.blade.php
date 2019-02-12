@@ -8,6 +8,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <link rel="shortcut icon" type="image/png" href="/img/icon.png"/>
+
     <!-- CSS -->
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400" rel="stylesheet">
