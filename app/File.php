@@ -16,6 +16,16 @@ class File extends Model
         'name',
         'app_version',
         'path',
+        'is_current',
+    ];
+
+    /**
+     * Auto casting for fields.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_current' => 'boolean',
     ];
 
     /**
@@ -46,5 +56,14 @@ class File extends Model
     public function translatedLines()
     {
         return $this->hasMany(TranslatedLine::class);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCurrent($query) {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        return $query->where('is_current', true);
     }
 }

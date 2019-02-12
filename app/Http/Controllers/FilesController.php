@@ -109,13 +109,19 @@ class FilesController extends Controller
 
         $helper = new FileHelper($path);
 
+        // Remove is_current status for the latest file
+        $current = File::where('platform_id', $request->platform_id)->current()->first();
+        if ($current) {
+            $current->fill(['is_current' => false])->save();
+        }
+
         $file = File::create([
             'name' => $helper->name(),
             'path' => $path,
             'app_version' => $request->app_version,
             'platform_id' => $request->platform_id,
+            'is_current' => true,
         ]);
-
         $file->load('platform');
 
         return $this->success($file->makeHidden('path'));

@@ -38,6 +38,7 @@ class SerializedDataHandler
         $this->file = $file;
 
         $this->previous_file = File::where('id', '!=', $file->id)
+            ->where('platform_id', $file->platform_id)
             ->orderBy('id', 'desc')
             ->first();
     }
