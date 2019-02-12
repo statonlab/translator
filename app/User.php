@@ -61,4 +61,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Language::class);
     }
+
+    /**
+     * Get all admins.
+     *
+     * @return \App\User
+     */
+    public static function admins()
+    {
+        $admin = Role::where('name', 'Admin')->first()->id;
+
+        return static::where('role_id', $admin);
+    }
 }

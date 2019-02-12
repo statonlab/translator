@@ -25,6 +25,7 @@ Auth::routes(['register' => false]);
 Route::group([
     'middleware' => ['auth'],
 ], function () {
+    // Vue routes
     Route::get('/', 'HomeController@index');
     Route::get('/users', 'HomeController@index');
     Route::get('/translate', 'HomeController@index');
@@ -33,7 +34,7 @@ Route::group([
     Route::get('/platforms', 'HomeController@index');
     Route::get('/platform/{platform}/files', 'HomeController@index');
 
-    // Logout
+    // Logout route
     Route::get('/logout', 'Auth\\LoginController@logout');
 
     /*
@@ -43,7 +44,7 @@ Route::group([
      * The following URLs point to web api endpoints.
      */
 
-    // Users
+    // User routes
     Route::get('/web/users', 'UsersController@index');
     Route::post('/web/users', 'UsersController@create');
     Route::delete('/web/user/{user}', 'UsersController@delete');
@@ -51,6 +52,10 @@ Route::group([
     Route::patch('/web/user/password', 'UsersController@patchPassword');
     Route::patch('/web/user/{user?}', 'UsersController@patch');
     Route::put('/web/user/{user?}', 'UsersController@update');
+
+    // Translation routes
+    Route::get('/web/translation/languages', 'TranslationsController@languages');
+    Route::get('/web/translation/lines/{platform}', 'TranslationsController@lines');
 });
 
 /*
@@ -84,4 +89,10 @@ Route::group([
     Route::post('/web/files', 'FilesController@create');
     Route::put('/web/file/{file}', 'FilesController@update');
     Route::delete('/web/file/{file}', 'FilesController@delete');
+
+    // Platform files
+    Route::get('/web/platform/{platform}/files', 'PlatformsController@files');
+
+    // Downloads
+    Route::get('/download/file/{file}', 'FilesController@download');
 });

@@ -80,11 +80,12 @@ class FilesController extends Controller
         $this->authorize('create', File::class);
 
         $this->validate($request, [
-            'file' => 'required|file|max:10240|mimetypes:text/plain',
+            'file' => 'required|file|max:10240|mimetypes:text/plain,application/json',
             'app_version' => 'required|max:100',
             'platform_id' => 'required|exists:platforms,id',
         ]);
 
+        // Verify that the platform + app_Version is unique
         $exists = File::where([
             'app_version' => $request->app_version,
             'platform_id' => $request->platform_id,
@@ -96,17 +97,31 @@ class FilesController extends Controller
             ]);
         }
 
+        // Validate the content of the file
+        if (! $this->validateContent($request->file('file'))) {
+            return $this->error('Unable to decode file', [
+                'file' => ['The file format is incorrect. Please verify the contents of the file.'],
+            ]);
+        }
+
+        // Save the file
         $path = Storage::disk($this->disk)->putFile('', $request->file('file'));
 
         $helper = new FileHelper($path);
+
+        // Remove is_current status for the latest file
+        $current = File::where('platform_id', $request->platform_id)->current()->first();
+        if ($current) {
+            $current->fill(['is_current' => false])->save();
+        }
 
         $file = File::create([
             'name' => $helper->name(),
             'path' => $path,
             'app_version' => $request->app_version,
             'platform_id' => $request->platform_id,
+            'is_current' => true,
         ]);
-
         $file->load('platform');
 
         return $this->success($file->makeHidden('path'));
@@ -185,5 +200,41 @@ class FilesController extends Controller
         $file->delete();
 
         return $this->created('File deleted successfully');
+    }
+
+    /**
+     * Download a file.
+     *
+     * @param \App\File $file
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function download(File $file)
+    {
+        $this->authorize('view', $file);
+
+        $extension = (new FileHelper($file->path))->extension();
+        $name = $file->platform->name.'-'.$file->app_version.'.'.$extension;
+
+        $name = strtolower(str_replace(' ', '-', $name));
+
+        return Storage::disk('files')->download($file->name, $name);
+    }
+
+    /**
+     * Validate the contents of the file.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return bool
+     */
+    protected function validateContent($file)
+    {
+        try {
+            $content = $file->get();
+
+            return ! ! json_decode($content);
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 }

@@ -79,10 +79,12 @@ class FilesAPITest extends TestCase
 
         $file_name = uniqid().'.json';
 
+        $file = UploadedFile::fake()->create($file_name);
+        file_put_contents($file->path(), '{}');
         $response = $this->post('/web/files', [
             'app_version' => 'v1.0.0',
             'platform_id' => factory(Platform::class)->create()->id,
-            'file' => UploadedFile::fake()->create($file_name),
+            'file' => $file,
         ]);
 
         $response->assertSuccessful();
@@ -144,10 +146,12 @@ class FilesAPITest extends TestCase
         // Create a file
         $file_name = uniqid().'.json';
 
+        $file = UploadedFile::fake()->create($file_name);
+        file_put_contents($file->path(), '{}');
         $response = $this->post('/web/files', [
             'app_version' => 10,
             'platform_id' => factory(Platform::class)->create()->id,
-            'file' => UploadedFile::fake()->create($file_name),
+            'file' => $file,
         ]);
 
         $response->assertSuccessful();
@@ -164,5 +168,28 @@ class FilesAPITest extends TestCase
 
         $helper = new FileHelper($file->path);
         Storage::disk('files')->assertMissing($helper->name());
+    }
+
+    public function testThatAdminsCanDownloadAFile()
+    {
+        $this->actingAs($this->makeAdminUser());
+
+        Storage::fake('files');
+
+        // Create a file
+        $file_name = uniqid().'.json';
+        $file = UploadedFile::fake()->create($file_name);
+        file_put_contents($file->path(), '{}');
+        $response = $this->post('/web/files', [
+            'app_version' => 'v1.0.0',
+            'platform_id' => factory(Platform::class)->create()->id,
+            'file' => $file,
+        ]);
+
+        $response->assertSuccessful();
+
+        $file = $response->json();
+
+        $this->get("/download/file/{$file['id']}")->assertSuccessful();
     }
 }

@@ -38,7 +38,7 @@
                         </td>
                         <td>{{ platform.languages_count }}</td>
                         <td>
-                            <router-link :to="`/files/${platform.id}`">
+                            <router-link :to="`/platform/${platform.id}/files`">
                                 {{ platform.files_count }}
                             </router-link>
                         </td>
@@ -170,6 +170,7 @@
 
       fileUploaded(file) {
         this.showLanguageForm = false
+        this.loadPlatforms()
       }
     }
   }

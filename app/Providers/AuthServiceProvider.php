@@ -9,8 +9,9 @@ use App\Policies\FilePolicy;
 use App\Policies\LanguagePolicy;
 use App\Policies\PlatformPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\TranslatedLinePolicy;
+use App\TranslatedLine;
 use App\User;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -24,7 +25,8 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Language::class => LanguagePolicy::class,
         Platform::class => PlatformPolicy::class,
-        File::class => FilePolicy::class
+        File::class => FilePolicy::class,
+        TranslatedLine::class=> TranslatedLinePolicy::class
     ];
 
     /**

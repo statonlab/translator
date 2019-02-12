@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Observers\PlatformObserver;
+use App\Platform;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +27,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Platform::observe(PlatformObserver::class);
     }
 }
