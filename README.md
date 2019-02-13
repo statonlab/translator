@@ -1,1 +1,1 @@
-![build badge](https://travis-ci.org/statonlab/translator "Build badge")
+[![Build Status](https://travis-ci.org/statonlab/translator.svg?branch=master)](https://travis-ci.org/statonlab/translator)
