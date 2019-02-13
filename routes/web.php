@@ -56,6 +56,7 @@ Route::group([
     // Translation routes
     Route::get('/web/translation/languages', 'TranslationsController@languages');
     Route::get('/web/translation/lines/{platform}', 'TranslationsController@lines');
+    Route::put('/web/translation/line/{translated_line}', 'TranslationsController@translate');
 });
 
 /*
