@@ -37,7 +37,7 @@ class TranslatedLinesUnpackerTest extends TestCase
 
         $unpacker = new TranslatedLinesUnpacker();
 
-        $data = $unpacker->unpack($lines);
+        $data = $unpacker->unpack(collect($lines));
 
         $this->assertArraySubset([
             'key1' => [

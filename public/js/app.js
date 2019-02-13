@@ -32110,22 +32110,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'Translate'
+  name: 'Translate',
+  data: function data() {
+    return {
+      needs_updating: true,
+      new_only: true
+    };
+  },
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -55391,42 +55384,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("form", [
-        _c("div", { staticClass: "card limit-width" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "d-flex" }, [
-              _c("div", { staticClass: "flex-grow-1 mr-1" }, [
-                _c("textarea", {
-                  staticClass: "form-control",
-                  attrs: { placeholder: "Translate the string" }
-                })
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "d-flex justify-content-end align-items-end" },
-                [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "submit" }
-                    },
-                    [_vm._v("Save")]
-                  )
-                ]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "card-footer" }, [
-            _vm._v(
-              "\n                the text for the translatable string in English\n            "
-            )
-          ])
-        ])
-      ])
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-6" })
     ])
   }
 ]
