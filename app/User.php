@@ -73,4 +73,14 @@ class User extends Authenticatable
 
         return static::where('role_id', $admin);
     }
+
+    /**
+     * Get all assigned platforms.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function platforms()
+    {
+        return $this->belongsToMany(Platform::class);
+    }
 }

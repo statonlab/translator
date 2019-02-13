@@ -124,7 +124,8 @@ class SerializedDataHandler
             'serialized_line_id' => $line->id,
             'key' => $line->key,
             'value' => $previous_line->value,
-            'needs_updating' => $this->needsUpdating($line),
+            'needs_updating' => $previous_line->needs_updating || $this->needsUpdating($line),
+            'is_current' => true,
         ]);
     }
 
@@ -142,6 +143,7 @@ class SerializedDataHandler
             'language_id' => $language->id,
             'serialized_line_id' => $line->id,
             'key' => $line->key,
+            'is_current' => true,
         ]);
     }
 

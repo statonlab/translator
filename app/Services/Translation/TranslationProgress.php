@@ -56,12 +56,17 @@ class TranslationProgress
 
         $ids = $languages->pluck('id')->values();
 
-        $incomplete = TranslatedLine::whereIn('language_id', $ids)
-            ->whereNull('value')
+        $complete = TranslatedLine::current()
+            ->whereIn('language_id', $ids)
+            ->where(function ($query) {
+                $query->whereNotNull('value');
+                $query->where('value', '!=', '');
+                $query->where('needs_updating', false);
+            })
             ->count();
 
-        $complete = TranslatedLine::whereIn('language_id', $ids)->count();
+        $total = TranslatedLine::current()->whereIn('language_id', $ids)->count();
 
-        return $complete === 0 ? 0 : $incomplete / $complete * 100;
+        return $total === 0 ? 0 : $complete / $total * 100;
     }
 }

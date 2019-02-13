@@ -31,17 +31,20 @@ class TranslationsAPITest extends TestCase
         $admin = $this->makeAdminUser();
         $this->actingAs($admin);
 
-        $languages = factory(Language::class, 10)->create();
+        $platform = factory(Platform::class)->create();
+        $languages = factory(Language::class,
+            10)->create(['platform_id' => $platform->id]);
+
         $assigned = $languages->take(5);
         $admin->languages()->sync($assigned);
 
-        $response = $this->get('/web/translation/languages');
+        $response = $this->get("/web/translation/languages/{$platform->id}");
 
         $response->assertSuccessful();
         $response->assertJsonStructure([
             [
-                'label',
-                'value',
+                'language',
+                'id',
             ],
         ]);
 
@@ -54,17 +57,19 @@ class TranslationsAPITest extends TestCase
         $user = $this->makeUser();
         $this->actingAs($user);
 
-        $languages = factory(Language::class, 10)->create();
+        $platform = factory(Platform::class)->create();
+        $languages = factory(Language::class,
+            10)->create(['platform_id' => $platform->id]);
         $assigned = $languages->take(5);
         $user->languages()->sync($assigned);
 
-        $response = $this->get('/web/translation/languages');
+        $response = $this->get("/web/translation/languages/{$platform->id}");
 
         $response->assertSuccessful();
         $response->assertJsonStructure([
             [
-                'label',
-                'value',
+                'language',
+                'id',
             ],
         ]);
 
@@ -74,7 +79,9 @@ class TranslationsAPITest extends TestCase
     /** @test */
     public function testThatGuestsCantAccessLanguagesAPI()
     {
-        $this->get('/web/translation/languages')->assertStatus(401);
+        $platform = factory(Platform::class)->create();
+
+        $this->get("/web/translation/languages/{$platform->id}")->assertStatus(401);
     }
 
     /** @test */
@@ -97,26 +104,32 @@ class TranslationsAPITest extends TestCase
             'is_current' => true,
         ]);
 
+        $language = factory(Language::class)->create(['platform_id' => $platform->id]);
+
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
+            'language_id' => $language->id,
         ]);
 
-        $response = $this->get('/web/translation/lines/'.$platform->id);
+        $response = $this->get('/web/translation/lines/'.$language->id);
 
         $response->assertSuccessful()->assertJsonStructure([
-            [
-                'serialized_line' => [
+            'data' => [
+                [
+                    'serialized_line' => [
+                        'value',
+                    ],
+                    'language' => [
+                        'language',
+                    ],
+                    'key',
                     'value',
                 ],
-                'language' => [
-                    'language',
-                ],
-                'key',
-                'value',
             ],
         ]);
     }
 
+    /** @test */
     public function testThatUsersCanListLinesOfAssignedLanguages()
     {
         /** @var \App\User $user */
@@ -155,33 +168,29 @@ class TranslationsAPITest extends TestCase
             'language_id' => $unassigned_language->id,
         ]);
 
-        $response = $this->get('/web/translation/lines/'.$platform->id);
+        $response = $this->get('/web/translation/lines/'.$assigned_language->id);
 
         $response->assertSuccessful()->assertJsonStructure([
-            [
-                'serialized_line' => [
+            'data' => [
+                [
+                    'serialized_line' => [
+                        'value',
+                    ],
+                    'language' => [
+                        'language',
+                    ],
+                    'key',
                     'value',
                 ],
-                'language' => [
-                    'language',
-                ],
-                'key',
-                'value',
             ],
         ]);
 
-        // Remove all lines that belong to a language that our user is assigned
-        $filter_fn = function ($line) use ($assigned_language) {
-            return $line['language']['id'] !== $assigned_language->id;
-        };
-        $total = array_filter($response->json(), $filter_fn);
-
-        // If we have at least 1 language left, then we got a language that our
-        // user was not assigned
-        $this->assertEmpty($total);
+        $response = $this->get('/web/translation/lines/'.$unassigned_language->id);
+        $response->assertStatus(403);
     }
 
-    public function testThatAdminsCanTrasnlateLines()
+    /** @test */
+    public function testThatAdminsCanTranslateLines()
     {
         $this->actingAs($this->makeAdminUser());
 
@@ -204,13 +213,63 @@ class TranslationsAPITest extends TestCase
             'id',
             'serialized_line' => [
                 'key',
-                'value'
+                'value',
             ],
             'language' => [
-                'language'
+                'language',
             ],
             'key',
             'value',
+            'user' => [
+                'name'
+            ]
         ]);
+    }
+
+    /** @test */
+    public function testThatUsersCanTranslateAssignedLines()
+    {
+        $user = $this->makeUser();
+        $this->actingAs($user);
+
+        $platform = factory(Platform::class)->create();
+
+        $file = factory(File::class)->create([
+            'platform_id' => $platform->id,
+            'is_current' => true,
+        ]);
+
+        /** @var TranslatedLine $line */
+        $line = factory(TranslatedLine::class)->create([
+            'file_id' => $file->id,
+        ]);
+
+        $user->languages()->syncWithoutDetaching([$line->language->id]);
+        $user->platforms()->syncWithoutDetaching([$platform->id]);
+
+        $response = $this->put("/web/translation/line/{$line->id}", [
+            'value' => 'test',
+        ]);
+        $response->assertSuccessful();
+        $response->assertJsonStructure([
+            'id',
+            'serialized_line' => [
+                'id',
+                'key',
+                'value',
+            ],
+            'language' => [
+                'id',
+                'language',
+            ],
+            'key',
+            'value',
+            'user' => [
+                'id',
+                'name',
+            ],
+        ]);
+
+        $this->assertEquals('test', $response->json()['value']);
     }
 }

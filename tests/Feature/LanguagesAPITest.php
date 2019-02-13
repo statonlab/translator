@@ -144,8 +144,8 @@ class LanguagesAPITest extends TestCase
         $response->assertJson(['attached' => true, 'detached' => false]);
 
         // Now the user should exist in the pivot table
-        $this->assertEquals(1,
-            $language->users()->where('users.id', $assignee->id)->count());
+        $this->assertEquals(1, $assignee->languages()->count());
+        $this->assertEquals(1, $assignee->platforms()->count());
 
         // If we toggle again it should detach
         $response = $this->post('/web/language/'.$language->id.'/user', [
@@ -163,7 +163,7 @@ class LanguagesAPITest extends TestCase
         $response->assertJson(['attached' => false, 'detached' => true]);
 
         // Now make sure the user is no longer attached
-        $this->assertEquals(0,
-            $language->users()->where('users.id', $assignee->id)->count());
+        $this->assertEquals(0, $assignee->languages()->count());
+        $this->assertEquals(0, $assignee->platforms()->count());
     }
 }

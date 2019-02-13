@@ -166,10 +166,10 @@ class FilesAPITest extends TestCase
 
         $this->delete("/web/file/$file->id")->assertSuccessful();
 
-        $helper = new FileHelper($file->path);
-        Storage::disk('files')->assertMissing($helper->name());
+        Storage::disk('files')->assertMissing($file->name);
     }
 
+    /** @test */
     public function testThatAdminsCanDownloadAFile()
     {
         $this->actingAs($this->makeAdminUser());

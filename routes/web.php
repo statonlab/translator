@@ -54,9 +54,16 @@ Route::group([
     Route::put('/web/user/{user?}', 'UsersController@update');
 
     // Translation routes
-    Route::get('/web/translation/languages', 'TranslationsController@languages');
-    Route::get('/web/translation/lines/{platform}', 'TranslationsController@lines');
-    Route::put('/web/translation/line/{translated_line}', 'TranslationsController@translate');
+    Route::get('/web/translation/languages/{platform}',
+        'TranslationsController@languages');
+    Route::get('/web/translation/platforms', 'TranslationsController@assignedPlatforms');
+    Route::get('/web/translation/lines/{language}', 'TranslationsController@lines');
+    Route::put('/web/translation/line/{translated_line}',
+        'TranslationsController@translate');
+
+    // Progress routes
+    Route::get('/web/progress/language/{language}', 'ProgressController@language');
+    Route::get('/web/progress/user/{user?}', 'ProgressController@user');
 });
 
 /*

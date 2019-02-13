@@ -17,6 +17,7 @@ class TranslatedLine extends Model
         'key',
         'value',
         'needs_updating',
+        'is_current',
     ];
 
     /**
@@ -24,7 +25,18 @@ class TranslatedLine extends Model
      */
     protected $casts = [
         'needs_updating' => 'boolean',
+        'is_current' => 'boolean',
     ];
+
+    /**
+     * Get last modified by user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -60,5 +72,13 @@ class TranslatedLine extends Model
     public function scopeNeedsUpdating($query)
     {
         return $query->where('needs_updating', true);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return mixed
+     */
+    public function scopeCurrent($query) {
+        return $query->where('is_current', true);
     }
 }

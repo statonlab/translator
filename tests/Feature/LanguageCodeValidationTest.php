@@ -3,12 +3,15 @@
 namespace Tests\Feature;
 
 use App\Rules\LanguageCode;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LanguageCodeValidationTest extends TestCase
 {
+    use DatabaseTransactions;
+
     public function testThatCorrectCodesReturnTrue()
     {
         $rule = new LanguageCode();

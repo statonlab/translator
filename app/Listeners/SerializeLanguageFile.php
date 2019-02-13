@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Notifications\SerializerFailedNotification;
 use App\Services\Serializers\JsonSerializer;
 use App\Services\Translation\SerializedDataHandler;
+use App\TranslatedLine;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\User;
@@ -29,14 +30,17 @@ class SerializeLanguageFile implements ShouldQueue
             $serializer = new JsonSerializer();
             $serialized = $serializer->serialize($file);
 
+            // Mark all previously translated lines as not current
+            TranslatedLine::where('is_current', true)->update(['is_current' => false]);
+
             // Created
             $handler = new SerializedDataHandler($file, $serialized);
             $handler->createSerializedRecords();
         } catch (Exception $exception) {
-            User::admins()->get()->each(function ($admin) use ($file, $exception) {
+            foreach (User::admins()->get() as $admin) {
                 /** @var User $admin */
                 $admin->notify(new SerializerFailedNotification($file, $exception));
-            });
+            }
         }
     }
 }
