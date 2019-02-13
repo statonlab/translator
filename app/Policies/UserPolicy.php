@@ -38,7 +38,7 @@ class UserPolicy
      */
     protected function isAdminOrOwner(User $user1, User $user2): bool
     {
-        return $user1->isAdmin() || $user1->id === $user2->id;
+        return $user1->id === $user2->id || $user1->isAdmin();
     }
 
     /**

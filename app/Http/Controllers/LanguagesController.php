@@ -142,10 +142,15 @@ class LanguagesController extends Controller
 
         $changes = $language->users()->toggle([$request->user_id]);
 
-        return $this->created([
+        $results = [
             'attached' => count($changes['attached']) > 0,
             'detached' => count($changes['detached']) > 0,
-        ]);
+        ];
+
+        $user = User::find($request->user_id);
+        $user->platforms()->toggle([$language->platform_id]);
+
+        return $this->created($results);
     }
 
     /**

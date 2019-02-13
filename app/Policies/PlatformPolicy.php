@@ -13,11 +13,11 @@ class PlatformPolicy
     /**
      * @param \App\User $user
      * @param string $ability
-     * @return bool
+     * @return bool|null
      */
     public function before(User $user, string $ability)
     {
-        return $user->isAdmin();
+        return $user->isAdmin() ? true : null;
     }
 
     /**
@@ -36,8 +36,9 @@ class PlatformPolicy
      */
     protected function assignedAPlatform(User $user, Platform $platform)
     {
-        return $user->isAdmin();
-        //return $platform->users()->where('user_id', $user->id)->count() > 0;
+        return $user->platforms()
+            ->where('platforms.platform_id', $platform->id)
+            ->exists();
     }
 
     /**
@@ -72,7 +73,7 @@ class PlatformPolicy
      */
     public function update(User $user, Platform $platform)
     {
-        return $this->assignedAPlatform($user, $platform);
+        return $user->isAdmin();
     }
 
     /**
@@ -84,30 +85,6 @@ class PlatformPolicy
      */
     public function delete(User $user, Platform $platform)
     {
-        return $this->assignedAPlatform($user, $platform);
-    }
-
-    /**
-     * Determine whether the user can restore the platform.
-     *
-     * @param  \App\User $user
-     * @param  \App\Platform $platform
-     * @return mixed
-     */
-    public function restore(User $user, Platform $platform)
-    {
-        return $this->assignedAPlatform($user, $platform);
-    }
-
-    /**
-     * Determine whether the user can permanently delete the platform.
-     *
-     * @param  \App\User $user
-     * @param  \App\Platform $platform
-     * @return mixed
-     */
-    public function forceDelete(User $user, Platform $platform)
-    {
-        return $this->assignedAPlatform($user, $platform);
+        return $user->isAdmin();
     }
 }

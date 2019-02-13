@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class TranslationProgressTest extends TestCase
 {
     use DatabaseTransactions;
-    
+
     /** @test */
     public function testThatWeComputeProgressCorrectly()
     {

@@ -162,7 +162,7 @@
         }
 
         try {
-          await axios.delete(`/web/files/${file.id}`)
+          await axios.delete(`/web/file/${file.id}`)
           this.loadFiles()
         } catch (e) {
           console.error(e)

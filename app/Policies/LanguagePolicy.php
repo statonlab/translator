@@ -26,9 +26,11 @@ class LanguagePolicy
      * @param  \App\Language $Language
      * @return mixed
      */
-    public function view(User $user, Language $Language)
+    public function view(User $user, Language $language)
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || $language->users()
+                ->where('user_id', $user->id)
+                ->count() > 0;
     }
 
     /**

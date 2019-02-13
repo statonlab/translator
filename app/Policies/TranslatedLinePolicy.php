@@ -19,7 +19,7 @@ class TranslatedLinePolicy
      */
     public function before(User $user, string $ability)
     {
-        return $user->isAdmin();
+        return $user->isAdmin() ? true : null;
     }
 
     /**

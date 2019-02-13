@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Platform extends Model
 {
+    /**
+     * @var array
+     */
     protected $fillable = [
         'name',
     ];
@@ -28,5 +31,15 @@ class Platform extends Model
     public function files()
     {
         return $this->hasMany(File::class);
+    }
+
+    /**
+     * Get assigned users.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

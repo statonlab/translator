@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FileCreated;
 use App\File;
 use App\Helpers\FileHelper;
 use App\Http\Traits\Responds;
@@ -122,7 +123,10 @@ class FilesController extends Controller
             'platform_id' => $request->platform_id,
             'is_current' => true,
         ]);
+
         $file->load('platform');
+
+        event(new FileCreated($file));
 
         return $this->success($file->makeHidden('path'));
     }

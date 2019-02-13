@@ -13,8 +13,22 @@ class TranslationsController extends Controller
 {
     use Responds;
 
-    public function assignedPlatforms(Request $request) {
-        $this->validate();
+    /**
+     * Get all assigned platforms.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function assignedPlatforms(Request $request)
+    {
+        /** @var \App\User $user */
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return Platform::get();
+        }
+
+        return $this->success($user->platforms);
     }
 
     /**
@@ -23,33 +37,35 @@ class TranslationsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function languages(Request $request)
+    public function languages(Platform $platform, Request $request)
     {
         /** @var \App\User $user */
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            $languages = Language::get();
+            $languages = $platform->languages;
         } else {
-            $languages = $user->languages;
+            $languages = $platform->languages()
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('users.id', $user->id);
+                })
+                ->get();
         }
 
-        return $this->success($languages->map(function ($language) {
-            return [
-                'label' => $language->language,
-                'value' => $language->id,
-            ];
-        }));
+        return $this->success($languages);
     }
 
     /**
-     * @param \App\Platform $platform
+     * @param \App\Language $language
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function lines(Platform $platform, Request $request)
+    public function lines(Language $language, Request $request)
     {
+        $this->authorize('view', $language);
+
         $this->validate($request, [
             'new_only' => 'nullable|boolean',
             'needs_updating' => 'nullable|boolean',
@@ -59,21 +75,31 @@ class TranslationsController extends Controller
         /** @var \App\User $user */
         $user = $request->user();
 
+        $platform = $language->platform;
         $file = $platform->files()->current()->first();
 
         if (! $file) {
-            return $this->error('No primary translation files have been uploaded for this platform.',
-                [], 422);
+            $message = 'No primary translation files have been uploaded for this platform.';
+
+            return $this->error($message, [], 422);
         }
 
-        $lines = TranslatedLine::with(['serializedLine', 'language'])
-            ->where('file_id', $file->id);
+        $lines = TranslatedLine::current()->with([
+            'serializedLine',
+            'language',
+            'user' => function ($query) {
+                $query->select(['users.id', 'users.name']);
+            },
+        ])->where('language_id', $language->id);
 
         if (! $user->isAdmin()) {
             $lines->whereIn('language_id', $user->languages);
         }
 
-        $lines = $this->filterLines($request, $lines)->get();
+        $lines = $this->filterLines($request, $lines)
+            ->orderBy('value', 'asc')
+            ->orderBy('id', 'desc')
+            ->paginate(100);
 
         return $this->success($lines);
     }
@@ -87,33 +113,44 @@ class TranslationsController extends Controller
      */
     protected function filterLines(Request $request, Builder $lines)
     {
-        if ($request->new_only && $request->needs_updating) {
-            $lines = $lines->where(function ($query) {
-                /** @var TranslatedLine $query */
+        $lines->where(function ($query) use ($request) {
+            if ($request->new_only && $request->needs_updating) {
+                $query->where(function ($query) {
+                    /** @var TranslatedLine $query */
+                    $query->needsTranslation();
+                })->orWhere(function ($query) {
+                    /** @var TranslatedLine $query */
+                    $query->needsUpdating();
+                });
+            } elseif ($request->new_only) {
                 $query->needsTranslation();
-            })->orWhere(function ($query) {
-                /** @var TranslatedLine $query */
+            } elseif ($request->needs_updating) {
                 $query->needsUpdating();
-            });
-        } elseif ($request->new_only) {
-            $lines = $lines->needsTranslation();
-        } elseif ($request->needs_updating) {
-            $lines = $lines->needsUpdating();
-        }
-
-        if ($request->language_id) {
-            $is_assigned = $request->user()
-                ->languages()
-                ->where('languages.id', $request->language_id)
-                ->exists();
-            if ($is_assigned) {
-                $lines = $lines->where('language_id', $request->language_id);
             }
-        }
+
+            if ($request->language_id) {
+                $is_assigned = $request->user()
+                    ->languages()
+                    ->where('languages.id', $request->language_id)
+                    ->exists();
+                if ($is_assigned) {
+                    $query->where('language_id', $request->language_id);
+                }
+            }
+        });
 
         return $lines;
     }
 
+    /**
+     * Perform the translation of a line.
+     *
+     * @param \App\TranslatedLine $translated_line
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function translate(TranslatedLine $translated_line, Request $request)
     {
         $this->authorize('update', $translated_line);
@@ -122,9 +159,19 @@ class TranslationsController extends Controller
             'value' => 'required|max:255',
         ]);
 
-        $translated_line->fill($request->only('value'))->save();
+        $translated_line->fill([
+            'user_id' => $request->user()->id,
+            'value' => $request->value,
+            'needs_updating' => false,
+        ])->save();
 
-        $translated_line->load(['serializedLine', 'language']);
+        $translated_line->load([
+            'serializedLine',
+            'language',
+            'user' => function ($query) {
+                $query->select(['users.id', 'users.name']);
+            },
+        ]);
 
         return $this->created($translated_line);
     }
