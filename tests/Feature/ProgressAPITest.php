@@ -14,7 +14,8 @@ class ProgressAPITest extends TestCase
     use DatabaseTransactions;
 
     /** @test */
-    public function testThatProgressForUsersIsReportedCorrectly() {
+    public function testThatProgressForUsersIsReportedCorrectly()
+    {
         $user = $this->makeUser();
         $this->actingAs($user);
 
@@ -25,12 +26,14 @@ class ProgressAPITest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -42,7 +45,8 @@ class ProgressAPITest extends TestCase
     }
 
     /** @test */
-    public function testThatProgressIsAccessibleToAdmins() {
+    public function testThatProgressIsAccessibleToAdmins()
+    {
         $admin = $this->makeAdminUser();
         $user = $this->makeUser();
         $this->actingAs($admin);
@@ -54,12 +58,15 @@ class ProgressAPITest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
+            'value' => 'with value',
         ]);
-        $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -71,7 +78,8 @@ class ProgressAPITest extends TestCase
     }
 
     /** @test */
-    public function testThatProgressOfOtherUsersIsNotAccessibleToNonAdmins() {
+    public function testThatProgressOfOtherUsersIsNotAccessibleToNonAdmins()
+    {
         $user2 = $this->makeUser();
         $user = $this->makeUser();
         $this->actingAs($user2);
@@ -81,7 +89,8 @@ class ProgressAPITest extends TestCase
     }
 
     /** @test */
-    public function testThatTheAuthenticatedUserGetsTheirOwnProgressIfNoUserIsSpecified() {
+    public function testThatTheAuthenticatedUserGetsTheirOwnProgressIfNoUserIsSpecified()
+    {
         $user = $this->makeUser();
         $this->actingAs($user);
 
@@ -92,12 +101,16 @@ class ProgressAPITest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -109,7 +122,8 @@ class ProgressAPITest extends TestCase
     }
 
     /** @test */
-    public function testThatUsersCanAccessLanguageProgressIfAssigned() {
+    public function testThatUsersCanAccessLanguageProgressIfAssigned()
+    {
         $user = $this->makeUser();
         $this->actingAs($user);
 
@@ -120,12 +134,16 @@ class ProgressAPITest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -137,7 +155,8 @@ class ProgressAPITest extends TestCase
     }
 
     /** @test */
-    public function testThatAdminsCanAccessLanguageProgressEvenIfNotAssigned() {
+    public function testThatAdminsCanAccessLanguageProgressEvenIfNotAssigned()
+    {
         $user = $this->makeAdminUser();
         $this->actingAs($user);
 
@@ -146,12 +165,16 @@ class ProgressAPITest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $empty->fill(['value' => null])->save();
 

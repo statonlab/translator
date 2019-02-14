@@ -17,5 +17,6 @@ $factory->define(\App\TranslatedLine::class, function (Faker $faker) {
         'key' => $line->key,
         'value' => $faker->word,
         'needs_updating' => $faker->boolean,
+        'is_current' => $faker->boolean,
     ];
 });

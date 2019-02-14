@@ -109,6 +109,7 @@ class TranslationsAPITest extends TestCase
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
             'language_id' => $language->id,
+            'is_current' => 1
         ]);
 
         $response = $this->get('/web/translation/lines/'.$language->id);
@@ -146,12 +147,12 @@ class TranslationsAPITest extends TestCase
             'is_current' => true,
         ]);
 
-        /** @var TranslatedLine $assigned_language */
+        /** @var Language $assigned_language */
         $assigned_language = factory(Language::class)->create([
             'platform_id' => $platform->id,
         ]);
 
-        /** @var TranslatedLine $unassigned_language */
+        /** @var Language $unassigned_language */
         $unassigned_language = factory(Language::class)->create([
             'platform_id' => $platform->id,
         ]);
@@ -161,15 +162,16 @@ class TranslationsAPITest extends TestCase
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
             'language_id' => $assigned_language->id,
+            'is_current' => 1
         ]);
 
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
             'language_id' => $unassigned_language->id,
+            'is_current' => 1
         ]);
 
         $response = $this->get('/web/translation/lines/'.$assigned_language->id);
-
         $response->assertSuccessful()->assertJsonStructure([
             'data' => [
                 [
@@ -203,6 +205,7 @@ class TranslationsAPITest extends TestCase
 
         $line = factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
+            'is_current' => 1
         ]);
 
         $response = $this->put("/web/translation/line/{$line->id}", [
@@ -242,6 +245,7 @@ class TranslationsAPITest extends TestCase
         /** @var TranslatedLine $line */
         $line = factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
+            'is_current' => 1
         ]);
 
         $user->languages()->syncWithoutDetaching([$line->language->id]);
