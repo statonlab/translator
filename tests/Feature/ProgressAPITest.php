@@ -27,6 +27,7 @@ class ProgressAPITest extends TestCase
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
             'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
@@ -34,6 +35,7 @@ class ProgressAPITest extends TestCase
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
             'is_current' => true,
+            'needs_updating' => false,
         ]);
         $empty->fill(['value' => null])->save();
 
