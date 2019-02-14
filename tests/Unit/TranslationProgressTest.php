@@ -23,12 +23,15 @@ class TranslationProgressTest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -42,18 +45,21 @@ class TranslationProgressTest extends TestCase
     {
         $platform = factory(Platform::class)->create();
         $language = factory(Language::class)->create([
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -73,12 +79,15 @@ class TranslationProgressTest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
         ]);
         $empty->fill(['value' => null])->save();
 
@@ -93,7 +102,7 @@ class TranslationProgressTest extends TestCase
         $platform = factory(Platform::class)->create();
         $user = $this->makeUser();
         $language = factory(Language::class)->create([
-            'platform_id' => $platform->id
+            'platform_id' => $platform->id,
         ]);
 
         $user->languages()->attach($language);
@@ -101,12 +110,16 @@ class TranslationProgressTest extends TestCase
         // 1 translated line
         $filled = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $filled->fill(['value' => 'with value'])->save();
 
         // And 1 empty line
         $empty = factory(TranslatedLine::class)->create([
             'language_id' => $language->id,
+            'is_current' => true,
+            'needs_updating' => false,
         ]);
         $empty->fill(['value' => null])->save();
 
