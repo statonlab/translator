@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 
 class ProgressController extends Controller
 {
-    use Responds;
-
     /**
      * @param \App\Language $language
      * @return \Illuminate\Http\JsonResponse

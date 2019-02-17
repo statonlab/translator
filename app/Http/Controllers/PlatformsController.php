@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 
 class PlatformsController extends Controller
 {
-    use Responds;
-
     /**
      * Display a listing of the resource.
      *

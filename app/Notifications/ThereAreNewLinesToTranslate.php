@@ -2,34 +2,29 @@
 
 namespace App\Notifications;
 
-use App\File;
+use App\Platform;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class SerializerFailedNotification extends Notification
+class ThereAreNewLinesToTranslate extends Notification
 {
     use Queueable;
 
     /**
-     * @var \App\File
+     * @var \App\Platform
      */
-    protected $file;
-
-    /**
-     * @var \Exception
-     */
-    protected $exception;
+    protected $platform;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(File $file, \Exception $exception)
+    public function __construct(Platform $platform)
     {
-        $this->file = $file;
-        $this->exception = $exception;
+        $this->platform = $platform;
     }
 
     /**
@@ -51,9 +46,10 @@ class SerializerFailedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->line('Serializing the file failed with the following message:')
-            ->line($this->exception->getMessage())
-            ->action('See All Notifications', url('/notifications'))
+        return (new MailMessage)
+            ->subject('There are Lines to Translate')
+            ->line('There are new or updated lines that need translation for '.$this->platform->name)
+            ->action('Translate', url('/translate'))
             ->line('Thank you for using our application!');
     }
 
@@ -66,11 +62,8 @@ class SerializerFailedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'file_path' => $this->file->path,
-            'file_id' => $this->file->id,
-            'exception' => $this->exception->getMessage(),
-            'description' => 'Failed attempt to serialize a file: '.$this->exception->getMessage(),
-            'is_error' => true,
+            'description' => 'There are new or updated lines that need translation for '.$this->platform->name,
+            'is_error' => false,
         ];
     }
 }

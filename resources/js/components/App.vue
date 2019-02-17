@@ -1,5 +1,6 @@
 <template>
     <div class="app-container">
+        <notifications classes="notification"/>
         <sidebar @change="activeLink = $event"/>
         <div class="main-content">
             <navbar :title="activeLink.title"></navbar>

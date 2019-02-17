@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\SerializationCompleted;
 use App\Notifications\SerializerFailedNotification;
 use App\Services\Serializers\JsonSerializer;
 use App\Services\Translation\SerializedDataHandler;
@@ -36,6 +37,8 @@ class SerializeLanguageFile implements ShouldQueue
             // Created
             $handler = new SerializedDataHandler($file, $serialized);
             $handler->createSerializedRecords();
+
+            event(new SerializationCompleted($file->platform));
         } catch (Exception $exception) {
             foreach (User::admins()->get() as $admin) {
                 /** @var User $admin */

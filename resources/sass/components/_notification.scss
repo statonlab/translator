@@ -1,0 +1,17 @@
+.notification {
+  padding: 10px;
+  margin: 5px;
+  max-width: 100vh;
+  border-left: 3px solid #eee;
+  @extend .rounded;
+  @extend .p-4;
+  @extend .shadow-sm;
+
+  &.success {
+    @extend .alert-success;
+  }
+
+  &.danger {
+    @extend .alert-danger;
+  }
+}

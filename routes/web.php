@@ -33,6 +33,7 @@ Route::group([
     Route::get('/profile', 'HomeController@index');
     Route::get('/platforms', 'HomeController@index');
     Route::get('/platform/{platform}/files', 'HomeController@index');
+    Route::get('/notifications-registry', 'HomeController@index');
 
     // Logout route
     Route::get('/logout', 'Auth\\LoginController@logout');
@@ -64,6 +65,11 @@ Route::group([
     // Progress routes
     Route::get('/web/progress/language/{language}', 'ProgressController@language');
     Route::get('/web/progress/user/{user?}', 'ProgressController@user');
+
+    // Subscriptions
+    Route::get('/web/subscriptions', 'SubscriptionsController@index');
+    Route::post('/web/subscription/{notification_type}',
+        'SubscriptionsController@toggle');
 });
 
 /*
@@ -103,4 +109,9 @@ Route::group([
 
     // Downloads
     Route::get('/download/file/{file}', 'FilesController@download');
+
+    // Notifications
+    Route::get('/web/notifications-registry', 'SubscriptionsController@registry');
+    Route::put('/web/subscription/{notification_type}', 'SubscriptionsController@update');
+    Route::post('/web/subscriptions', 'SubscriptionsController@create');
 });

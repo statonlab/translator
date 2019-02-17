@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller
 {
-    use Responds;
-
     /**
      * @var string
      */

@@ -11,8 +11,6 @@ use Illuminate\Http\Request;
 
 class TranslationsController extends Controller
 {
-    use Responds;
-
     /**
      * Get all assigned platforms.
      *

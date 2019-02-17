@@ -28,7 +28,7 @@
 
     methods: {
       make(name) {
-        if (name.indexOf('ios') === 0 || name.indexOf('md') === 0 || name.indexOf('logo') === 0) {
+        if (name.indexOf('ios-') === 0 || name.indexOf('md-') === 0 || name.indexOf('logo-') === 0) {
           this.id = name
           return
         }

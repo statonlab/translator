@@ -71,6 +71,11 @@
             title: 'Users',
             icon : 'contacts',
             path : '/users'
+          }] : []),
+          ...(User.isAdmin() ? [{
+            title: 'Notifications Registry',
+            icon : 'notifications',
+            path : '/notifications-registry'
           }] : [])
         ],
 
