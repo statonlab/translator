@@ -9,6 +9,7 @@ import Vue from 'vue'
 
 // Plugins
 import VueRouter from 'vue-router'
+import Notifications from 'vue-notification'
 
 // Screens
 import App from './components/App'
@@ -20,11 +21,16 @@ import Profile from './views/Profile'
 import Platforms from './views/Platforms'
 import IonIcon from './components/IonIcon'
 import PlatformFiles from './views/PlatformFiles'
+import NotFoundPage from './views/NotFoundPage'
+import NotificationsRegistry from './views/NotificationsRegistry'
 
 // Vue.config.ignoredElements = [/^ion-/]
 
 // Register VueRouter
 Vue.use(VueRouter)
+
+// Register global plugins
+Vue.use(Notifications)
 
 // Each route should map to a component. The "component" can
 // either be an actual component constructor created via
@@ -37,7 +43,9 @@ const routes = [
   {path: '/languages', component: Languages},
   {path: '/profile', component: Profile},
   {path: '/platforms', component: Platforms},
-  {path: '/platform/:id/files', component: PlatformFiles}
+  {path: '/platform/:id/files', component: PlatformFiles},
+  {path: '/notifications-registry', component: NotificationsRegistry},
+  {path: '*', component: NotFoundPage}
 ]
 
 // 3. Create the router instance and pass the `routes` option

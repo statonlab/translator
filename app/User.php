@@ -83,4 +83,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Platform::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function notificationTypes()
+    {
+        return $this->belongsToMany(NotificationType::class, 'notification_user');
+    }
 }

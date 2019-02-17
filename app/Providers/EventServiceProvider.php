@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Events\FileCreated;
+use App\Events\SerializationCompleted;
+use App\Listeners\SendUpdatesToSubscribers;
 use App\Listeners\SerializeLanguageFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
@@ -23,7 +25,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-
+        SerializationCompleted::class => [
+            SendUpdatesToSubscribers::class
+        ]
     ];
 
     /**

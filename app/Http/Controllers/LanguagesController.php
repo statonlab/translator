@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 
 class LanguagesController extends Controller
 {
-    use Responds;
-
     /**
      * List languages.
      *
