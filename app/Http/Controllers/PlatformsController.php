@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\Responds;
+use App\Language;
 use App\Platform;
 use Illuminate\Http\Request;
 
@@ -174,5 +175,22 @@ class PlatformsController extends Controller
             'platform' => $platform,
             'files' => $files->paginate($request->limit ?: 15),
         ]);
+    }
+
+    public function download(Platform $platform, Request $request) {
+        $this->authorize('update', $platform);
+
+        $this->validate($request, [
+            'language_id' => 'nullable|exists:languages,id'
+        ]);
+
+        if(!empty($request->language_id)) {
+            $language = Language::find($request->language_id);
+            $this->authorize('view', $language);
+        }
+
+
+
+        $lines = [];
     }
 }
