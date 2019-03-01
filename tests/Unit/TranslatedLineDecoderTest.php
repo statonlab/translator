@@ -6,12 +6,15 @@ use App\File;
 use App\Language;
 use App\Services\Serializers\TranslatedLineDecoder;
 use App\TranslatedLine;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TranslatedLineDecoderTest extends TestCase
 {
+    use DatabaseTransactions;
+    
     public function testThatDecodingResultsInTheAnticipatedArray()
     {
         $file = factory(File::class)->create();
