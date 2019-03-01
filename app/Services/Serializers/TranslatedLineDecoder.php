@@ -3,10 +3,11 @@
 namespace App\Services\Serializers;
 
 use App\File;
+use App\Services\Contracts\DecoderInterface;
 use App\TranslatedLine;
 use App\Language;
 
-class TranslatedLineDecoder
+class TranslatedLineDecoder implements DecoderInterface
 {
     /**
      * Decode a language.
@@ -61,7 +62,11 @@ class TranslatedLineDecoder
 
         // remove key
         $key = array_pop($keys);
-        $decoded[$key] = [];
+
+        if (! isset($decoded[$key])) {
+            $decoded[$key] = [];
+        }
+
         $this->recursiveLineDecoder($line, $decoded[$key], $keys);
     }
 }
