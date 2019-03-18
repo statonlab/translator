@@ -220,6 +220,10 @@ class FilesController extends Controller
 
         $name = strtolower(str_replace(' ', '-', $name));
 
+        if (! Storage::disk('files')->exists($file->name)) {
+            return abort(404);
+        }
+
         return Storage::disk('files')->download($file->name, $name);
     }
 

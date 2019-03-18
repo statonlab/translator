@@ -18,7 +18,7 @@ class TranslationsAPITest extends TestCase
     /**
      * Add json header.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -58,8 +58,9 @@ class TranslationsAPITest extends TestCase
         $this->actingAs($user);
 
         $platform = factory(Platform::class)->create();
-        $languages = factory(Language::class,
-            10)->create(['platform_id' => $platform->id]);
+        $languages = factory(Language::class, 10)->create([
+            'platform_id' => $platform->id,
+        ]);
         $assigned = $languages->take(5);
         $user->languages()->sync($assigned);
 
@@ -109,7 +110,7 @@ class TranslationsAPITest extends TestCase
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
             'language_id' => $language->id,
-            'is_current' => 1
+            'is_current' => 1,
         ]);
 
         $response = $this->get('/web/translation/lines/'.$language->id);
@@ -162,13 +163,13 @@ class TranslationsAPITest extends TestCase
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
             'language_id' => $assigned_language->id,
-            'is_current' => 1
+            'is_current' => 1,
         ]);
 
         factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
             'language_id' => $unassigned_language->id,
-            'is_current' => 1
+            'is_current' => 1,
         ]);
 
         $response = $this->get('/web/translation/lines/'.$assigned_language->id);
@@ -205,7 +206,7 @@ class TranslationsAPITest extends TestCase
 
         $line = factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
-            'is_current' => 1
+            'is_current' => 1,
         ]);
 
         $response = $this->put("/web/translation/line/{$line->id}", [
@@ -224,8 +225,8 @@ class TranslationsAPITest extends TestCase
             'key',
             'value',
             'user' => [
-                'name'
-            ]
+                'name',
+            ],
         ]);
     }
 
@@ -245,7 +246,7 @@ class TranslationsAPITest extends TestCase
         /** @var TranslatedLine $line */
         $line = factory(TranslatedLine::class)->create([
             'file_id' => $file->id,
-            'is_current' => 1
+            'is_current' => 1,
         ]);
 
         $user->languages()->syncWithoutDetaching([$line->language->id]);

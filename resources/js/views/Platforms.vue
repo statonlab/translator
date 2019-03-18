@@ -33,7 +33,8 @@
                             <editable
                                     @save="patch(platform, 'name', $event)"
                                     :value="platform.name">
-                                {{ platform.name }}
+                                <div class="mb-1"><strong>{{ platform.name }}</strong></div>
+                                <progress-bar :value="platform.progress"/>
                             </editable>
                         </td>
                         <td>{{ platform.languages_count }}</td>
@@ -44,6 +45,14 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-end">
+                                <a class="btn btn-outline-info btn-sm mr-2"
+                                   target="_blank"
+                                   :href="`/download/${platform.id}`">
+                                    <span class="icon d-inline-flex mr-2">
+                                        <ion-icon name="cloud-download"></ion-icon>
+                                    </span>
+                                    <span>Download</span>
+                                </a>
                                 <button class="btn btn-outline-primary btn-sm mr-2" @click="addFile(platform)">
                                     <span class="icon d-inline-flex mr-2">
                                         <ion-icon name="cloud-upload"></ion-icon>
@@ -86,10 +95,11 @@
   import Editable from '../components/Editable'
   import Errors from '../forms/Errors'
   import LanguageFileForm from '../forms/LanguageFileForm'
+  import ProgressBar from '../components/ProgressBar'
 
   export default {
     name      : 'Platforms',
-    components: {LanguageFileForm, Editable, PlatformForm, Modal},
+    components: {ProgressBar, LanguageFileForm, Editable, PlatformForm, Modal},
     mounted() {
       this.loadPlatforms()
     },
@@ -106,7 +116,7 @@
 
     watch: {
       search() {
-        this.loadLanguages()
+        this.loadPlatforms()
       }
     },
 

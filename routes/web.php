@@ -109,9 +109,11 @@ Route::group([
 
     // Downloads
     Route::get('/download/file/{file}', 'FilesController@download');
+    Route::get('/download/{platform}', 'PlatformsController@download');
 
     // Notifications
     Route::get('/web/notifications-registry', 'SubscriptionsController@registry');
     Route::put('/web/subscription/{notification_type}', 'SubscriptionsController@update');
     Route::post('/web/subscriptions', 'SubscriptionsController@create');
+
 });

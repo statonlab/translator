@@ -4,7 +4,10 @@ namespace App\Services\Serializers;
 
 use App\Exceptions\InvalidJsonKeyException;
 use App\File;
+use App\Language;
+use App\SerializedLine;
 use App\Services\Contracts\SerializerInterface;
+use App\TranslatedLine;
 use Illuminate\Support\Facades\Storage;
 
 class JsonSerializer implements SerializerInterface

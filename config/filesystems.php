@@ -53,6 +53,11 @@ return [
             'root' => storage_path('app/files'),
         ],
 
+        'translated' => [
+            'driver' => 'local',
+            'root' => storage_path('app/translated'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
