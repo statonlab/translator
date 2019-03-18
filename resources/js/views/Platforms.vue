@@ -34,7 +34,7 @@
                                     @save="patch(platform, 'name', $event)"
                                     :value="platform.name">
                                 <div class="mb-1"><strong>{{ platform.name }}</strong></div>
-                                <progress-bar :value="platform.progress"/>
+                                <progress-bar :value="platform.progress" height=".5rem"/>
                             </editable>
                         </td>
                         <td>{{ platform.languages_count }}</td>
@@ -86,6 +86,8 @@
                     @close="showLanguageForm = false"
             />
         </modal>
+
+        <spinner v-if="loading"/>
     </div>
 </template>
 
@@ -96,16 +98,18 @@
   import Errors from '../forms/Errors'
   import LanguageFileForm from '../forms/LanguageFileForm'
   import ProgressBar from '../components/ProgressBar'
+  import Spinner from '../components/Spinner'
 
   export default {
     name      : 'Platforms',
-    components: {ProgressBar, LanguageFileForm, Editable, PlatformForm, Modal},
+    components: {Spinner, ProgressBar, LanguageFileForm, Editable, PlatformForm, Modal},
     mounted() {
       this.loadPlatforms()
     },
 
     data() {
       return {
+        loading         : true,
         search          : '',
         showCreateModal : false,
         platforms       : [],
@@ -132,6 +136,7 @@
         } catch (e) {
           console.error(e)
         }
+        this.loading = false
       },
 
       platformCreated() {

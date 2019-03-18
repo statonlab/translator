@@ -20,9 +20,7 @@ class SerializedDataHandler
     protected $file;
 
     /**
-     * The file this current one is going to replace.
-     *
-     * @var File|Null
+     * @var File
      */
     protected $previous_file;
 
@@ -39,7 +37,6 @@ class SerializedDataHandler
 
         $this->previous_file = File::where('id', '!=', $file->id)
             ->where('platform_id', $file->platform_id)
-            ->orderBy('id', 'desc')
             ->first();
     }
 
@@ -53,6 +50,8 @@ class SerializedDataHandler
                 'file_id' => $this->file->id,
                 'key' => trim($record['key']),
                 'value' => trim($record['value']),
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         });
 
@@ -87,25 +86,32 @@ class SerializedDataHandler
     {
         // For every serialized line that's related to the current file.
         $this->file->serializedLines->each(function ($line) use ($language) {
-            if ($this->previous_file) {
-                // Find the equivalent line form the previous file for the same language.
-                $pre_translated_line = TranslatedLine::where([
-                    'file_id' => $this->previous_file->id,
-                    'language_id' => $language->id,
-                    'key' => $line->key,
-                ])->first();
+            // Find the equivalent line form the previous file for the same language.
+            $pre_translated_line = TranslatedLine::where([
+                'language_id' => $language->id,
+                'key' => $line->key,
+                'is_current' => true,
+            ])->first();
 
-                if ($pre_translated_line) {
-                    $this->copyPreviousLine($line, $pre_translated_line);
+            if ($pre_translated_line) {
+                $pre_translated_line->fill(['is_current' => false])->save();
+                $this->copyPreviousLine($line, $pre_translated_line);
 
-                    return;
-                }
+                return;
             }
 
             // A previous file doesn't exist or a previously translated line
             // doesn't exist. Therefore, create a new line for this language.
             $this->createNewLine($line, $language);
         });
+
+        // Finally, clear lines that have is_current = true but do not belong to this file
+        TranslatedLine::where('file_id', '!=', $this->file->id)->where([
+            'is_current' => true,
+            'language_id' => $language->id,
+        ])->update([
+            'is_current' => false,
+        ]);
     }
 
     /**
@@ -120,7 +126,6 @@ class SerializedDataHandler
         return TranslatedLine::create([
             'file_id' => $this->file->id,
             'language_id' => $previous_line->language_id,
-            'user_id' => $previous_line->user_id,
             'serialized_line_id' => $line->id,
             'key' => $line->key,
             'value' => $previous_line->value,
@@ -155,13 +160,14 @@ class SerializedDataHandler
      */
     protected function needsUpdating(SerializedLine $new_line): bool
     {
-        /** @var SerializedLine $previous_line */
-        $previous_line = $this->previous_file->serializedLines()
-            ->where('key', $new_line->key)
-            ->first();
+        if ($this->previous_file) {
+            $previous_line = SerializedLine::where('file_id', $this->previous_file->id)
+                ->where('key', $new_line->key)
+                ->first();
 
-        if ($previous_line) {
-            return $previous_line->value !== $new_line->value;
+            if ($previous_line) {
+                return $previous_line->value !== $new_line->value;
+            }
         }
 
         return false;

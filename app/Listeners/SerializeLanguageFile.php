@@ -31,10 +31,7 @@ class SerializeLanguageFile implements ShouldQueue
             $serializer = new JsonSerializer();
             $serialized = $serializer->serialize($file);
 
-            // Mark all previously translated lines as not current
-            TranslatedLine::where('is_current', true)->update(['is_current' => false]);
-
-            // Created
+            // Create the serialized lines
             $handler = new SerializedDataHandler($file, $serialized);
             $handler->createSerializedRecords();
 

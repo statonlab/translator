@@ -41,6 +41,7 @@ class PlatformsController extends Controller
                 /** @var \Illuminate\Database\Eloquent\Builder $query */
                 $query->where('is_current', true);
                 $query->whereNotNull('value');
+                $query->where('value', '!=', '');
             },
         ]);
 
@@ -55,12 +56,73 @@ class PlatformsController extends Controller
         $platforms->orderBy('name', 'asc');
         $data = $platforms->paginate($request->limit ?: 10);
         $data->getCollection()->transform(function ($platform) {
-            $platform->progress = $platform->total_lines_count === 0 ? 0 : $platform->translated_lines_count / $platform->total_lines_count * 100;
+            $platform->progress = $this->computeProgress($platform->translated_lines_count,
+                $platform->total_lines_count);
 
             return $platform;
         });
 
         return $this->success($data);
+    }
+
+    /**
+     * Get a list of platforms ids and names only without pagination.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function compressedIndex(Request $request)
+    {
+        /** @var \App\User $user */
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            $platforms = Platform::select('id', 'name');
+        } else {
+            $platforms = $user->platforms()->select('id', 'name');
+        }
+
+        $platforms->orderBy('name', 'asc');
+
+        return $this->success($platforms->get());
+    }
+
+    /**
+     * @param \App\Platform $platform
+     * @param \Illuminate\Http\Request $request
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function progress(Platform $platform, Request $request)
+    {
+        $this->authorize('view', $platform);
+
+        /** @var \App\User $user */
+        $user = $request->user();
+        if ($user->isAdmin()) {
+            $languages = $platform->languages();
+        } else {
+            $languages = $user->languages()->where('platform_id', $platform->id);
+        }
+
+        $languages = $languages->withCount([
+            'translatedLines as total_lines' => function ($query) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query->where('is_current', true);
+            },
+            'translatedLines as completed_lines' => function ($query) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query->whereNotNull('value');
+                $query->where('value', '!=', '');
+                $query->where('is_current', 1);
+            },
+        ])->orderBy('language', 'asc')->get()->map(function ($language) {
+            $language->progress = $this->computeProgress($language->completed_lines,
+                $language->total_lines);
+
+            return $language;
+        });
+
+        return $this->success($languages);
     }
 
     /**
@@ -199,6 +261,15 @@ class PlatformsController extends Controller
         ]);
     }
 
+    /**
+     * Download files.
+     *
+     * @param \App\Platform $platform
+     * @param \Illuminate\Http\Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function download(Platform $platform, Request $request)
     {
         $this->authorize('update', $platform);
@@ -246,5 +317,17 @@ class PlatformsController extends Controller
         // TODO: create TemporaryFile model and job
 
         return response()->download($zip, basename($zip));
+    }
+
+    /**
+     * Get progress value.
+     *
+     * @param $completed
+     * @param $total
+     * @return float|int
+     */
+    public function computeProgress($completed, $total)
+    {
+        return $total == 0 ? 0 : $completed / $total * 100;
     }
 }

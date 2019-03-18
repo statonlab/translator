@@ -10,7 +10,6 @@ class TranslatedLine extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
         'serialized_line_id',
         'language_id',
         'file_id',

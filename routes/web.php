@@ -91,11 +91,13 @@ Route::group([
 
     // Platforms
     Route::get('/web/platforms', 'PlatformsController@index');
+    Route::get('/web/platforms/compressed', 'PlatformsController@compressedIndex');
     Route::post('/web/platforms', 'PlatformsController@create');
     Route::get('/web/platform/{platform}', 'PlatformsController@show');
     Route::put('/web/platform/{platform}', 'PlatformsController@update');
     Route::delete('/web/platform/{platform}', 'PlatformsController@delete');
     Route::patch('/web/platform/{platform}', 'PlatformsController@patch');
+    Route::get('/web/platform/{platform}/progress', 'PlatformsController@progress');
 
     // Files
     Route::get('/web/files', 'FilesController@index');
