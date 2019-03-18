@@ -17,6 +17,7 @@ class AddUniqueConstraintToTranslatedLinesTableForKeyFileId extends Migration
             $table->unique([
                 'key',
                 'file_id',
+                'language_id'
             ]);
         });
     }
@@ -32,6 +33,7 @@ class AddUniqueConstraintToTranslatedLinesTableForKeyFileId extends Migration
             $table->dropUnique([
                 'key',
                 'file_id',
+                'language_id'
             ]);
         });
     }
