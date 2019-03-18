@@ -34,7 +34,7 @@
                                     @save="patch(platform, 'name', $event)"
                                     :value="platform.name">
                                 <div class="mb-1"><strong>{{ platform.name }}</strong></div>
-                                <progress-bar :value="platform.progress"/>
+                                <progress-bar :value="platform.progress" height=".5rem"/>
                             </editable>
                         </td>
                         <td>{{ platform.languages_count }}</td>

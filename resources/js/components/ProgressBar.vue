@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="progress">
+        <div class="progress" :style="`height: ${height}`">
             <div class="progress-bar"
                  :style="`width: ${parsed}%`"
                  role="progressbar"
@@ -14,15 +14,16 @@
 
 <script>
   export default {
-    name : 'ProgressBar',
+    name    : 'ProgressBar',
     computed: {
       parsed() {
         return Math.floor(this.value)
       }
     },
-    props: {
-      value: {required: true, type: Number},
-      show_value: {required: false, type: Boolean, default: false}
+    props   : {
+      value     : {required: true, type: Number},
+      show_value: {required: false, type: Boolean, default: false},
+      height    : {required: false, type: String, default: '1rem'}
     }
   }
 </script>
