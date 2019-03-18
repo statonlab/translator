@@ -50,21 +50,25 @@
                 <button :class="['btn', 'btn-link', {'disabled': loading}]"
                         type="button"
                         @click="$emit('close')"
-                        :disabled="loading">Close
+                        :disabled="loading">
+                    Close
                 </button>
                 <button class="btn btn-primary" type="submit">Upload</button>
             </div>
         </div>
+
+        <spinner v-if="loading"/>
     </form>
 </template>
 
 <script>
   import Form from './Form'
+  import Spinner from '../components/Spinner'
 
   export default {
-    name: 'LanguageFileForm',
-
-    props: {platform: {required: true, type: Object}},
+    name      : 'LanguageFileForm',
+    components: {Spinner},
+    props     : {platform: {required: true, type: Object}},
 
     data() {
       return {

@@ -59,6 +59,8 @@
         </div>
 
         <pagination v-if="total > 100" @next="next()" @previous="previous()" @click="goTo($event)"/>
+
+        <Spinner v-if="loading"/>
     </div>
 </template>
 
@@ -66,10 +68,11 @@
   import TranslatedLine from '../components/TranslatedLine'
   import ProgressBar from '../components/ProgressBar'
   import Pagination from '../components/Pagination'
+  import Spinner from '../components/Spinner'
 
   export default {
     name      : 'Translate',
-    components: {Pagination, ProgressBar, TranslatedLine},
+    components: {Spinner, Pagination, ProgressBar, TranslatedLine},
     data() {
       return {
         loading         : true,
@@ -200,16 +203,6 @@
         } catch (e) {
           console.error(e)
         }
-      },
-
-      lineSave(data) {
-        this.lines = this.lines.map(line => {
-          if (line.id === data.id) {
-            return data
-          }
-
-          return line
-        })
       },
 
       next() {
