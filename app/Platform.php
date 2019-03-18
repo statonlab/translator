@@ -42,4 +42,13 @@ class Platform extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    /**
+     * Gets translated lines.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function translatedLines() {
+        return $this->hasManyThrough(TranslatedLine::class, Language::class);
+    }
 }

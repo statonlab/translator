@@ -10,7 +10,7 @@ use App\Language;
 class TranslatedLineDecoder implements DecoderInterface
 {
     /**
-     * Decode a language.
+     * Decode a language from dot notation back into array format.
      *
      * @param \App\Language $language The language to obtain lines for.
      * @param \App\File $file If given, the lines for this file would be chosen instead of the
@@ -38,6 +38,8 @@ class TranslatedLineDecoder implements DecoderInterface
     }
 
     /**
+     * Decode a given line.
+     *
      * @param \App\TranslatedLine $line
      * @param array $decoded
      */
@@ -48,9 +50,11 @@ class TranslatedLineDecoder implements DecoderInterface
     }
 
     /**
-     * @param \App\TranslatedLine $line
-     * @param array $decoded
-     * @param array $keys
+     * Recursively iterate through lines and add keys to the decoded array.
+     *
+     * @param \App\TranslatedLine $line The line to translate.
+     * @param array $decoded The decoded array.
+     * @param array $keys The remaining keys.
      */
     public function recursiveLineDecoder(TranslatedLine $line, array &$decoded, array $keys)
     {
