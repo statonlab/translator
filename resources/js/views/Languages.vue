@@ -75,6 +75,14 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-end align-items-center">
+                                <a :href="`/download/${language.platform.id}?language_id=${language.id}`"
+                                   target="_blank"
+                                   class="btn btn-outline-info btn-sm mr-2">
+                                    <span class="icon d-inline-flex mr-2">
+                                        <ion-icon name="download"></ion-icon>
+                                    </span>
+                                    <span>Download</span>
+                                </a>
                                 <a class="btn btn-outline-primary btn-sm mr-2"
                                    href="#"
                                    @click.prevent="manageAssignees(language)">

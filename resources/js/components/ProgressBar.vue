@@ -17,7 +17,7 @@
     name : 'ProgressBar',
     computed: {
       parsed() {
-        return Math.ceil(this.value)
+        return Math.floor(this.value)
       }
     },
     props: {

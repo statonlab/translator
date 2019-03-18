@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Traits\Responds;
 use App\Language;
 use App\Platform;
+use App\Services\Serializers\TranslatedLineDecoder;
+use App\Services\Storage\Archive;
 use Illuminate\Http\Request;
 
 class PlatformsController extends Controller
@@ -26,7 +28,21 @@ class PlatformsController extends Controller
             'limit' => 'nullable|int|min:6|max:100',
         ]);
 
-        $platforms = Platform::withCount(['languages', 'files']);
+        $platforms = Platform::withCount([
+            'languages' => function ($query) {
+            },
+            'files' => function ($query) {
+            },
+            'translatedLines as total_lines_count' => function ($query) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query->where('is_current', true);
+            },
+            'translatedLines as translated_lines_count' => function ($query) {
+                /** @var \Illuminate\Database\Eloquent\Builder $query */
+                $query->where('is_current', true);
+                $query->whereNotNull('value');
+            },
+        ]);
 
         if (! empty($request->search)) {
             $platforms->whereHas('languages', function ($query) use ($request) {
@@ -37,8 +53,14 @@ class PlatformsController extends Controller
         }
 
         $platforms->orderBy('name', 'asc');
+        $data = $platforms->paginate($request->limit ?: 10);
+        $data->getCollection()->transform(function ($platform) {
+            $platform->progress = $platform->total_lines_count === 0 ? 0 : $platform->translated_lines_count / $platform->total_lines_count * 100;
 
-        return $this->success($platforms->paginate($request->limit ?: 10));
+            return $platform;
+        });
+
+        return $this->success($data);
     }
 
     /**
@@ -177,20 +199,44 @@ class PlatformsController extends Controller
         ]);
     }
 
-    public function download(Platform $platform, Request $request) {
+    public function download(Platform $platform, Request $request)
+    {
         $this->authorize('update', $platform);
 
         $this->validate($request, [
-            'language_id' => 'nullable|exists:languages,id'
+            'language_id' => 'nullable|exists:languages,id',
         ]);
 
-        if(!empty($request->language_id)) {
-            $language = Language::find($request->language_id);
+        if (! empty($request->language_id)) {
+            $language = $platform->languages()->findOrFail($request->language_id);
             $this->authorize('view', $language);
+
+            $languages = collect([$language]);
+        } else {
+            $languages = $platform->languages;
         }
 
+        // Decode all data
+        $dir = uniqid();
+        $disk = \Storage::disk('translated');
+        $files = collect([]);
+        foreach ($languages as $language) {
+            $decoder = new TranslatedLineDecoder();
+            $lines = $decoder->decode($language);
 
+            $path = "{$dir}/{$language->language_code}.json";
+            $files->push($disk->path($path));
+            $disk->put($path, json_encode($lines, JSON_PRETTY_PRINT));
+        }
 
-        $lines = [];
+        // Create Zip File
+        $archive = new Archive($files->toArray(), $disk);
+        try {
+            $zip = $archive->zip("{$dir}/{$platform->name}.zip");
+        } catch (\Exception $exception) {
+            return abort(500, $exception->getMessage());
+        }
+
+        return response()->download($zip, basename($zip));
     }
 }

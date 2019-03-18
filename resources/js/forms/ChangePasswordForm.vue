@@ -65,7 +65,7 @@
     methods: {
       async submit() {
         try {
-          const {data} = await this.form.patch('/web/user/password')
+          await this.form.patch('/web/user/password')
           this.form.reset()
         } catch (e) {
           if (!(e.response && e.response.status === 422)) {
