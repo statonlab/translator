@@ -20,6 +20,11 @@ class SerializedDataHandler
     protected $file;
 
     /**
+     * @var File
+     */
+    protected $previous_file;
+
+    /**
      * SerializedDataHandler constructor.
      *
      * @param File $file
@@ -29,6 +34,10 @@ class SerializedDataHandler
     {
         $this->serialized = collect($serialized);
         $this->file = $file;
+
+        $this->previous_file = File::where('id', '!=', $file->id)
+            ->where('platform_id', $file->platform_id)
+            ->first();
     }
 
     /**
@@ -41,8 +50,8 @@ class SerializedDataHandler
                 'file_id' => $this->file->id,
                 'key' => trim($record['key']),
                 'value' => trim($record['value']),
-                'created_at' => time(),
-                'updated_at' => time(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         });
 
@@ -151,13 +160,14 @@ class SerializedDataHandler
      */
     protected function needsUpdating(SerializedLine $new_line): bool
     {
-        /** @var SerializedLine $previous_line */
-        $previous_line = $this->previous_file->serializedLines()
-            ->where('key', $new_line->key)
-            ->first();
+        if ($this->previous_file) {
+            $previous_line = SerializedLine::where('file_id', $this->previous_file->id)
+                ->where('key', $new_line->key)
+                ->first();
 
-        if ($previous_line) {
-            return $previous_line->value !== $new_line->value;
+            if ($previous_line) {
+                return $previous_line->value !== $new_line->value;
+            }
         }
 
         return false;
