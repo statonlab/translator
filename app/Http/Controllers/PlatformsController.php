@@ -237,6 +237,14 @@ class PlatformsController extends Controller
             return abort(500, $exception->getMessage());
         }
 
+        // Clean up disk
+        $files->map(function ($file) use ($disk) {
+            $disk->delete($file);
+        });
+
+        // Register a file for deletion after 4 hours from now
+        // TODO: create TemporaryFile model and job
+
         return response()->download($zip, basename($zip));
     }
 }
