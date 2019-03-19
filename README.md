@@ -7,7 +7,7 @@ other applications.
 
 ## Documentation
 
-*Coming soon*
+*Coming soon...*
 
 ## License
 
