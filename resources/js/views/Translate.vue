@@ -49,7 +49,15 @@
         </div>
 
         <div class="card" v-if="!loading && lines.length === 0">
-            <div class="card-body">
+            <div class="card-body" v-if="platforms.length === 0">
+                Please <router-link to="/platforms">create a platform</router-link> first
+                to be able to start translating.
+            </div>
+            <div class="card-body" v-if="platforms.length > 0 && languages.length === 0">
+                Please <router-link to="/languages">create a language</router-link> first
+                to be able to start translating.
+            </div>
+            <div class="card-body" v-if="languages.length > 0">
                 There is no translatable text that matches your filtering criteria.
             </div>
         </div>
@@ -116,6 +124,7 @@
             this.selectedPlatform = data[0].id
           } else {
             this.selectedPlatform = -1
+            this.loading = false
           }
         } catch (e) {
           console.error(e)
@@ -134,6 +143,7 @@
             this.selectedLanguage = data[0].id
           } else {
             this.selectedLanguage = -1
+            this.loading = false
           }
         } catch (e) {
           console.error(e)
