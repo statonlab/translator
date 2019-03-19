@@ -37,7 +37,7 @@ class PlatformPolicy
     protected function assignedAPlatform(User $user, Platform $platform)
     {
         return $user->platforms()
-            ->where('platforms.platform_id', $platform->id)
+            ->where('platforms.id', $platform->id)
             ->exists();
     }
 

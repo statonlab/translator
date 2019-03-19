@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Language;
+use App\Observers\LanguageObserver;
 use App\Observers\PlatformObserver;
 use App\Platform;
 use Illuminate\Support\ServiceProvider;
@@ -28,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Platform::observe(PlatformObserver::class);
+        Language::observe(LanguageObserver::class);
     }
 }

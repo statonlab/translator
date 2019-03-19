@@ -19,7 +19,15 @@ class PlatformObserver
         $files = $platform->files;
 
         foreach ($files as $file) {
-            Storage::disk('files')->delete($file->name);
+            if (Storage::disk('files')->exists($file->name)) {
+                Storage::disk('files')->delete($file->name);
+            }
+
+            try {
+                $file->delete();
+            } catch (\Exception $exception) {
+                \Log::error($exception->getMessage());
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ class TranslationsController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            return Platform::get();
+            return $this->success(Platform::orderBy('name', 'asc')->get());
         }
 
         return $this->success($user->platforms);
@@ -41,12 +41,17 @@ class TranslationsController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            $languages = $platform->languages;
+            $languages = $platform->languages()
+                ->orderBy('language', 'asc')
+                ->orderBy('language_code', 'asc')
+                ->get();
         } else {
             $languages = $platform->languages()
                 ->whereHas('users', function ($query) use ($user) {
                     $query->where('users.id', $user->id);
                 })
+                ->orderBy('language', 'asc')
+                ->orderBy('language_code', 'asc')
                 ->get();
         }
 
@@ -97,7 +102,7 @@ class TranslationsController extends Controller
         $lines = $this->filterLines($request, $lines)
             ->orderBy('value', 'asc')
             ->orderBy('id', 'desc')
-            ->paginate(100);
+            ->paginate(10);
 
         return $this->success($lines);
     }

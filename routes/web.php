@@ -66,6 +66,10 @@ Route::group([
     Route::get('/web/progress/language/{language}', 'ProgressController@language');
     Route::get('/web/progress/user/{user?}', 'ProgressController@user');
 
+    // Platforms
+    Route::get('/web/platforms/compressed', 'PlatformsController@compressedIndex');
+    Route::get('/web/platform/{platform}/progress', 'PlatformsController@progress');
+
     // Subscriptions
     Route::get('/web/subscriptions', 'SubscriptionsController@index');
     Route::post('/web/subscription/{notification_type}',
@@ -91,13 +95,11 @@ Route::group([
 
     // Platforms
     Route::get('/web/platforms', 'PlatformsController@index');
-    Route::get('/web/platforms/compressed', 'PlatformsController@compressedIndex');
     Route::post('/web/platforms', 'PlatformsController@create');
     Route::get('/web/platform/{platform}', 'PlatformsController@show');
     Route::put('/web/platform/{platform}', 'PlatformsController@update');
     Route::delete('/web/platform/{platform}', 'PlatformsController@delete');
     Route::patch('/web/platform/{platform}', 'PlatformsController@patch');
-    Route::get('/web/platform/{platform}/progress', 'PlatformsController@progress');
 
     // Files
     Route::get('/web/files', 'FilesController@index');

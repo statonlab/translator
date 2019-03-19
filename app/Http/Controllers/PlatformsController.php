@@ -77,14 +77,15 @@ class PlatformsController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            $platforms = Platform::select('id', 'name');
+            $platforms = Platform::select('id', 'name')->orderBy('name', 'asc')->get();
         } else {
-            $platforms = $user->platforms()->select('id', 'name');
+            $platforms = $user->platforms()
+                ->select(['name', 'platforms.id'])
+                ->orderBy('name', 'asc')
+                ->get();
         }
 
-        $platforms->orderBy('name', 'asc');
-
-        return $this->success($platforms->get());
+        return $this->success($platforms);
     }
 
     /**

@@ -48,7 +48,18 @@ class Platform extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function translatedLines() {
+    public function translatedLines()
+    {
         return $this->hasManyThrough(TranslatedLine::class, Language::class);
+    }
+
+    /**
+     * Get all serialized lines.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function serializedLines()
+    {
+        return $this->hasManyThrough(SerializedLine::class, File::class);
     }
 }

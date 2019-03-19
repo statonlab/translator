@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\FileCreated;
 use App\Events\SerializationCompleted;
 use App\Notifications\SerializerFailedNotification;
 use App\Services\Serializers\JsonSerializer;
