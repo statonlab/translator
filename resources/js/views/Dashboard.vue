@@ -21,6 +21,12 @@
                                     :series="series"
                                     :options="chartOptions"/>
                     </div>
+                    <div v-if="platforms.length === 0 && !loading" class="text-muted mt-3">
+                        Please
+                        <router-link to="/platforms">create a platform</router-link>
+                        first to start
+                        translating language files.
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,6 +51,7 @@
 
     data() {
       return {
+        loading     : true,
         platforms   : [],
         platform    : -1,
         series      : [],
@@ -88,6 +95,8 @@
 
           if (data.length) {
             this.platform = data[0].id
+          } else {
+            this.loading = false
           }
         } catch (e) {
           console.error(e)
@@ -95,6 +104,7 @@
       },
 
       async loadPlatformProgress(id) {
+        this.loading = true
         try {
           const {data} = await axios.get(`/web/platform/${id}/progress`)
           const colors = [Colors.primary, Colors.success, Colors.info, Colors.secondary, Colors.warning, Colors.light]
@@ -118,6 +128,7 @@
         } catch (e) {
           console.error(e)
         }
+        this.loading = false
       }
     }
   }
