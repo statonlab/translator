@@ -37,9 +37,9 @@ class TranslationProgress
      */
     public function userPlatform(User $user, Platform $platform): float
     {
-        return $this->compute($platform->languages()
-            ->whereIn('languages.id', $user->languages->pluck('id'))
-            ->get());
+        $languages = $user->languages()->where('platform_id', $platform->id)->get();
+
+        return $this->compute($languages);
     }
 
     /**
@@ -50,7 +50,7 @@ class TranslationProgress
      */
     public function compute($languages): float
     {
-        if (isset($languages->id)) {
+        if (! is_array($languages) && isset($languages->id)) {
             $languages = collect([$languages]);
         }
 

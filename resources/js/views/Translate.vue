@@ -20,7 +20,7 @@
                             class="form-control"
                             v-model="selectedLanguage">
                         <option v-for="language in languages" :value="language.id">
-                            {{ language.language }}
+                            {{ language.language }} ({{ language.language_code }})
                         </option>
                     </select>
                 </div>
@@ -66,7 +66,12 @@
             <translated-line :line="line" @save="updateProgress()" :key="line.id"/>
         </div>
 
-        <pagination v-if="total > 100" @next="next()" @previous="previous()" @click="goTo($event)"/>
+        <pagination v-if="last_page > 1"
+                    :page="page"
+                    :count="last_page"
+                    @next="next()"
+                    @previous="previous()"
+                    @click="goTo($event)"/>
 
         <Spinner v-if="loading"/>
     </div>
@@ -99,10 +104,12 @@
 
     watch: {
       selectedPlatform() {
+        this.page = 1
         this.loadLanguages()
       },
 
       selectedLanguage() {
+        this.page = 1
         this.loadLines()
       },
 
@@ -230,6 +237,7 @@
       goTo(page) {
         this.page = page
         this.loadLines()
+        window.scrollTo(0, 0)
       }
     }
   }

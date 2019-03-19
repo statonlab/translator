@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\Responds;
 use App\Language;
+use App\Platform;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -67,12 +68,29 @@ class LanguagesController extends Controller
             'platform_id' => 'required|int|exists:platforms,id',
         ]);
 
-        return $this->success(Language::create($request->only([
+        $platform = Platform::find($request->platform_id);
+        $this->authorize('update', $platform);
+
+        // check if unique constraints are met
+        $exists = Language::where([
+            'platform_id' => $request->platform_id,
+            'language_code' => $request->language_code,
+        ])->exists();
+
+        if ($exists) {
+            return $this->error('Duplicate entry', [
+                'language_code' => ['the language code already exists for this platform.'],
+            ]);
+        }
+
+        $language = Language::create($request->only([
             'language',
             'language_code',
             'image',
             'platform_id',
-        ])));
+        ]));
+
+        return $this->success($language);
     }
 
     /**
@@ -146,7 +164,11 @@ class LanguagesController extends Controller
         ];
 
         $user = User::find($request->user_id);
-        $user->platforms()->toggle([$language->platform_id]);
+
+        $platforms = $user->languages->map(function ($language) {
+            return $language->platform_id;
+        })->unique();
+        $user->platforms()->sync($platforms);
 
         return $this->created($results);
     }

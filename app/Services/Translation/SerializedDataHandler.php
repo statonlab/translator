@@ -68,7 +68,7 @@ class SerializedDataHandler
     /**
      * Create the translation lines.
      */
-    protected function createTranslationLines()
+    protected function createTranslationLines(): void
     {
         // For every language the current platform is associated with.
         $this->file->platform->languages->each(function ($language) {
@@ -82,7 +82,7 @@ class SerializedDataHandler
      *
      * @param \App\Language $language
      */
-    protected function createTranslatedLinesForLanguage(Language $language)
+    protected function createTranslatedLinesForLanguage(Language $language): void
     {
         // For every serialized line that's related to the current file.
         $this->file->serializedLines->each(function ($line) use ($language) {

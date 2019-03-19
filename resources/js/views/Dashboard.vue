@@ -27,6 +27,9 @@
                         first to start
                         translating language files.
                     </div>
+                    <div v-if="platforms.length > 0 && !loading && platform == -1" class="text-muted mt-3">
+                        Please select a platform.
+                    </div>
                 </div>
             </div>
         </div>
@@ -71,7 +74,13 @@
                 },
                 total: {
                   show : true,
-                  label: 'Coverage'
+                  label: 'Coverage',
+                  formatter(w) {
+                    let t = w.globals.seriesTotals.reduce((a, b) => {
+                      return a + b
+                    }, 0) / w.globals.series.length
+                    return (Math.floor(t * 100) / 100) + '%'
+                  }
                 }
               }
             }
@@ -104,10 +113,14 @@
       },
 
       async loadPlatformProgress(id) {
+        if (id == -1) {
+          return
+        }
+
         this.loading = true
         try {
           const {data} = await axios.get(`/web/platform/${id}/progress`)
-          const colors = [Colors.primary, Colors.success, Colors.info, Colors.secondary, Colors.warning, Colors.light]
+          const colors = [Colors.primary, Colors.success, Colors.info, Colors.secondary, Colors.warning, Colors.dark]
 
           let series = []
           let labels = []
@@ -117,8 +130,12 @@
             series.push(Math.floor(language.progress))
           })
 
+          series = series.slice(0, colors.length)
+          labels = labels.slice(0, colors.length)
+
           let finalColors = colors.slice(0, labels.length > colors.length ? colors.length : labels.length)
-          let options     = this.chartOptions
+
+          let options = this.chartOptions
 
           options.colors = finalColors
           options.labels = labels

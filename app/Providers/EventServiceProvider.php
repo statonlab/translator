@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\FileCreated;
+use App\Events\LanguageCreated;
 use App\Events\SerializationCompleted;
+use App\Listeners\CopyTranslatedLinesForNewLanguage;
 use App\Listeners\SendUpdatesToSubscribers;
 use App\Listeners\SerializeLanguageFile;
 use Illuminate\Support\Facades\Event;
@@ -26,8 +28,11 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         SerializationCompleted::class => [
-            SendUpdatesToSubscribers::class
-        ]
+            SendUpdatesToSubscribers::class,
+        ],
+        LanguageCreated::class => [
+            CopyTranslatedLinesForNewLanguage::class,
+        ],
     ];
 
     /**
