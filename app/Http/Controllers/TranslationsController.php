@@ -99,10 +99,19 @@ class TranslationsController extends Controller
             $lines->whereIn('language_id', $user->languages);
         }
 
+        // Change the limit based on filters. If we have filters, we don't want to
+        // paginate. Since every time the user translates a line, the filters produce
+        // different results
+
         $lines = $this->filterLines($request, $lines)
             ->orderBy('value', 'asc')
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->orderBy('id', 'desc');
+
+        if ($request->needs_updating || $request->new_only) {
+            $lines = $lines->paginate($lines->count());
+        } else {
+            $lines = $lines->paginate(25);
+        }
 
         return $this->success($lines);
     }
