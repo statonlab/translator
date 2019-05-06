@@ -1,5 +1,6 @@
 <template>
-    <div class="spinner-container d-flex justify-content-center align-items-center" :style="`background-color: ${background}; ${fixed ? 'position: fixed !important;' : ''}`">
+    <div class="spinner-container d-flex justify-content-center align-items-center"
+         :style="`background-color: ${background};${fixed ? 'position: fixed !important;' : ''}left: ${left};`">
         <svg class="circular">
             <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
         </svg>
@@ -11,7 +12,8 @@
     props: {
       background: {default: 'rgba(255, 255, 255, 0.5)', type: String},
       message   : {default: '', type: String},
-      fixed     : {default: false, type: Boolean}
+      fixed     : {default: false, type: Boolean},
+      left      : {default: '250px', required: false, type: Boolean}
     }
   }
 </script>
@@ -23,12 +25,9 @@
 
     .spinner-container {
         position: absolute;
-        left: 0;
         top: 0;
         bottom: 0;
         right: 0;
-        height: 100%;
-        width: 100%;
         z-index: 9999999;
 
         .circular {

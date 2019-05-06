@@ -119,6 +119,8 @@
                     @close="showAssigneesModal = false"
                     :language="selectedLanguage"/>
         </modal>
+
+        <spinner v-if="loading"/>
     </div>
 </template>
 
@@ -130,10 +132,11 @@
   import LanguageAssigneesForm from '../forms/LanguageAssigneesForm'
   import Errors from '../forms/Errors'
   import LanguageFileForm from '../forms/LanguageFileForm'
+  import Spinner from '../components/Spinner'
 
   export default {
     name      : 'Languages',
-    components: {LanguageFileForm, LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
+    components: {Spinner, LanguageFileForm, LanguageAssigneesForm, Editable, LetterIcon, LanguageForm, Modal},
 
     watch: {
       search() {
@@ -148,6 +151,7 @@
 
     data() {
       return {
+        loading           : true,
         showCreateModal   : false,
         showAssigneesModal: false,
         selectedLanguage  : -1,
@@ -160,6 +164,7 @@
 
     methods: {
       async loadLanguages() {
+
         try {
           const {data}   = await axios.get('/web/languages', {
             params: {
@@ -170,6 +175,8 @@
         } catch (e) {
           console.error(e)
         }
+
+        this.loading = false
       },
 
       async loadPlatforms() {

@@ -103,6 +103,8 @@
             <user-form @close="addUserModal = false"
                        @create="userCreated($event)"></user-form>
         </modal>
+
+        <spinner v-if="loading"/>
     </div>
 </template>
 
@@ -112,14 +114,15 @@
   import Editable from '../components/Editable'
   import Pagination from '../components/Pagination'
   import LetterIcon from '../components/LetterIcon'
+  import Spinner from '../components/Spinner'
 
   export default {
     name: 'Users',
 
-    components: {LetterIcon, Pagination, Editable, UserForm, Modal},
+    components: {Spinner, LetterIcon, Pagination, Editable, UserForm, Modal},
 
     mounted() {
-      this.loadUsers()
+      this.loadUsers(true)
     },
 
     watch: {
@@ -130,6 +133,7 @@
 
     data() {
       return {
+        loading     : true,
         users       : [],
         addUserModal: false,
         search      : '',
@@ -141,7 +145,9 @@
     },
 
     methods: {
-      async loadUsers() {
+      async loadUsers(loading) {
+        this.loading = !!loading
+
         try {
           const {data}   = await axios.get('/web/users', {
             params: {
@@ -156,6 +162,7 @@
         } catch (e) {
           console.error(e)
         }
+        this.loading = false
       },
 
       userCreated(response) {
@@ -180,8 +187,8 @@
       async patch(user, field, event) {
         this.editing = true
         try {
-          let data       = {}
-          data[field]    = event.value
+          let data    = {}
+          data[field] = event.value
           await axios.patch(`/web/user/${user.id}`, data)
           this.loadUsers()
           event.done()
@@ -210,7 +217,7 @@
 
       goTo(page) {
         this.page = page
-        this.loadUsers()
+        this.loadUsers(true)
       }
     }
   }
