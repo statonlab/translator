@@ -42,7 +42,7 @@
         if (v.length > 1) {
           return v[0].charAt(0) + v[v.length - 1].charAt(0)
         } else if (v.length === 1) {
-          return v[0]
+          return v[0].charAt(0)
         }
 
         return ''
