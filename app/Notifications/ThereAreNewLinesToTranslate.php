@@ -47,6 +47,7 @@ class ThereAreNewLinesToTranslate extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->from(config('mail.from.address'), config('mail.from.name'))
             ->subject('There are Lines to Translate')
             ->line('There are new or updated lines that need translation for '.$this->platform->name)
             ->action('Translate', url('/translate'))
