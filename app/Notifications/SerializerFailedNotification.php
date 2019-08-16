@@ -51,7 +51,9 @@ class SerializerFailedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->line('Serializing the file failed with the following message:')
+        return (new MailMessage)
+            ->from(config('mail.from.address'), config('mail.from.name'))
+            ->line('Serializing the file failed with the following message:')
             ->line($this->exception->getMessage())
             ->action('See All Notifications', url('/notifications'))
             ->line('Thank you for using our application!');
