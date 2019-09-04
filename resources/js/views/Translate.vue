@@ -48,7 +48,9 @@
                             {{ completed || '0' }} / {{ total || '0' }}
                         </span>
                     </label>
-                    <progress-bar :value="progress" :show-value="true"/>
+                    <progress-bar :value="progress" :show-value="true">
+                        <small class="ml-auto text-muted">{{ wordCount }} words</small>
+                    </progress-bar>
                 </div>
             </form>
         </div>
@@ -109,6 +111,17 @@
         last_page       : 1,
         completed       : 0,
       }
+    },
+
+    computed: {
+      wordCount() {
+        if (this.lines.length > 0) {
+          return this.lines.reduce((a, b) => {
+            return  a + (b.value === null ? parseInt(b.serialized_line.value.length) : 0)
+          }, 0)
+        }
+        return 0
+      },
     },
 
     watch: {
@@ -224,10 +237,10 @@
 
       async updateProgress() {
         try {
-          const {data}  = await axios.get('/web/progress/language/' + this.selectedLanguage)
-          this.progress = data.progress
+          const {data}   = await axios.get('/web/progress/language/' + this.selectedLanguage)
+          this.progress  = data.progress
           this.completed = data.completed
-          this.total = data.total
+          this.total     = data.total
         } catch (e) {
           console.error(e)
         }
