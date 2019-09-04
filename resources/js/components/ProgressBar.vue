@@ -8,7 +8,10 @@
                  aria-valuemin="0"
                  aria-valuemax="100"></div>
         </div>
-        <small class="text-muted">{{ parsed }}% completed</small>
+        <div class="d-flex">
+            <small class="text-muted">{{ parsed }}% completed</small>
+            <slot></slot>
+        </div>
     </div>
 </template>
 

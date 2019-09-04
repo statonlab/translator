@@ -48,7 +48,9 @@
                             {{ completed || '0' }} / {{ total || '0' }}
                         </span>
                     </label>
-                    <progress-bar :value="progress" :show-value="true"/>
+                    <progress-bar :value="progress" :show-value="true">
+                        <small class="ml-auto text-muted">{{ wordCount }} words</small>
+                    </progress-bar>
                 </div>
             </form>
         </div>
@@ -71,7 +73,7 @@
         </div>
 
         <div v-for="line in lines">
-            <translated-line :line="line" @save="updateProgress()" :key="line.id"/>
+            <translated-line :line="line" @save="updateProgress($event)" :key="line.id"/>
         </div>
 
         <pagination v-if="last_page > 1"
@@ -108,6 +110,7 @@
         page            : 1,
         last_page       : 1,
         completed       : 0,
+        wordCount       : 0,
       }
     },
 
@@ -222,12 +225,22 @@
         }
       },
 
-      async updateProgress() {
+      async updateProgress(event) {
         try {
-          const {data}  = await axios.get('/web/progress/language/' + this.selectedLanguage)
-          this.progress = data.progress
+          const {data}   = await axios.get('/web/progress/language/' + this.selectedLanguage)
+          this.progress  = data.progress
           this.completed = data.completed
-          this.total = data.total
+          this.total     = data.total
+          if(event) {
+            this.lines = this.lines.map(l => {
+              if(l.id === event.id) {
+                return event
+              }
+
+              return l
+            })
+          }
+          this.computeWordCount()
         } catch (e) {
           console.error(e)
         }
@@ -249,6 +262,16 @@
         this.page = page
         this.loadLines()
         window.scrollTo(0, 0)
+      },
+
+      computeWordCount() {
+        if (this.lines.length > 0) {
+          this.wordCount = this.lines.reduce((a, b) => {
+            return a + (b.value === null ? parseInt(b.serialized_line.value.length) : 0)
+          }, 0)
+          return
+        }
+        this.wordCount = 0
       },
     },
   }
