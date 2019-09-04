@@ -21,7 +21,7 @@ class ProgressController extends Controller
 
         $reporter = new TranslationProgress();
 
-        return $this->success($reporter->compute($language));
+        return $this->success($reporter->compute($language, true));
     }
 
     /**

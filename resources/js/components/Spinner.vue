@@ -13,7 +13,7 @@
       background: {default: 'rgba(255, 255, 255, 0.5)', type: String},
       message   : {default: '', type: String},
       fixed     : {default: false, type: Boolean},
-      left      : {default: '250px', required: false, type: Boolean}
+      left      : {default: '250px', required: false}
     }
   }
 </script>

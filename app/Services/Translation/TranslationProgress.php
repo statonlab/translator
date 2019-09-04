@@ -46,9 +46,9 @@ class TranslationProgress
      * Compute progress on a language.
      *
      * @param TranslatedLine[]|\Illuminate\Support\Collection $language
-     * @return float
+     * @return float|array
      */
-    public function compute($languages): float
+    public function compute($languages, $full = false)
     {
         if (! is_array($languages) && isset($languages->id)) {
             $languages = collect([$languages]);
@@ -67,6 +67,14 @@ class TranslationProgress
 
         $total = TranslatedLine::current()->whereIn('language_id', $ids)->count();
 
-        return $total === 0 ? 0 : $complete / $total * 100;
+        if (! $full) {
+            return $total === 0 ? 0 : $complete / $total * 100;
+        }
+
+        return [
+            'progress' => $total === 0 ? 0 : $complete / $total * 100,
+            'total' => $total,
+            'completed' => $complete
+        ];
     }
 }
