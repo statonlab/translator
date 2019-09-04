@@ -42,7 +42,12 @@
                     </select>
                 </div>
                 <div class="form-group col-6 col-md-3">
-                    <label class="form-label d-block mb-2">Progress</label>
+                    <label class="form-label d-block mb-2 d-flex">
+                        <span>Progress</span>
+                        <span class="ml-auto font-weight-normal">
+                            {{ completed || '0' }} / {{ total || '0' }}
+                        </span>
+                    </label>
                     <progress-bar :value="progress" :show-value="true"/>
                 </div>
             </form>
@@ -52,8 +57,7 @@
             <div class="card-body" v-if="platforms.length === 0">
                 Please
                 <router-link to="/platforms">create a platform</router-link>
-                first
-                to be able to start translating.
+                first to be able to start translating.
             </div>
             <div class="card-body" v-if="platforms.length > 0 && languages.length === 0">
                 Please
@@ -102,7 +106,8 @@
         progress        : 0,
         total           : 0,
         page            : 1,
-        last_page       : 1
+        last_page       : 1,
+        completed       : 0,
       }
     },
 
@@ -120,7 +125,7 @@
       show() {
         this.page = 1
         this.loadLines()
-      }
+      },
     },
 
     mounted() {
@@ -170,12 +175,11 @@
         this.loading = true
         try {
           const {data}   = await axios.get('/web/translation/lines/' + this.selectedLanguage, {
-            params: this.getParams()
+            params: this.getParams(),
           })
           this.lines     = data.data
           this.page      = data.current_page
           this.last_page = data.last_page
-          this.total     = data.total
           this.updateProgress()
 
           if (data.total === 0 && data.current_page > 1) {
@@ -189,7 +193,7 @@
 
       getParams() {
         let params = {
-          page: this.page
+          page: this.page,
         }
 
         switch (this.show) {
@@ -197,7 +201,7 @@
             return {
               needs_updating: 1,
               new_only      : 1,
-              ...params
+              ...params,
             }
             break
           case 'all':
@@ -206,13 +210,13 @@
           case 'needs_updating':
             return {
               needs_updating: 1,
-              ...params
+              ...params,
             }
             break
           case 'new_only':
             return {
               new_only: 1,
-              ...params
+              ...params,
             }
             break
         }
@@ -221,7 +225,9 @@
       async updateProgress() {
         try {
           const {data}  = await axios.get('/web/progress/language/' + this.selectedLanguage)
-          this.progress = data
+          this.progress = data.progress
+          this.completed = data.completed
+          this.total = data.total
         } catch (e) {
           console.error(e)
         }
@@ -243,8 +249,8 @@
         this.page = page
         this.loadLines()
         window.scrollTo(0, 0)
-      }
-    }
+      },
+    },
   }
 </script>
 

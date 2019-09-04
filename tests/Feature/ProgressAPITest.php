@@ -153,7 +153,7 @@ class ProgressAPITest extends TestCase
         $response->assertSuccessful();
 
         // Should equal 50% translation
-        $this->assertEquals(50, $response->json());
+        $this->assertEquals(50, $response->json()['progress']);
     }
 
     /** @test */
@@ -184,6 +184,6 @@ class ProgressAPITest extends TestCase
         $response->assertSuccessful();
 
         // Should equal 50% translation
-        $this->assertEquals(50, $response->json());
+        $this->assertEquals(50, $response->json()['progress']);
     }
 }
