@@ -25,6 +25,21 @@ class ProgressController extends Controller
     }
 
     /**
+     * Get a total word count.
+     *
+     * @param \App\Language $language
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function wordCount(Language $language) {
+        $this->authorize('view', $language);
+
+        $reporter = new TranslationProgress();
+
+        return $this->success($reporter->wordCount($language));
+    }
+
+    /**
      * @param \Illuminate\Http\Request $request
      * @param \App\User|null $user
      * @return \Illuminate\Http\JsonResponse

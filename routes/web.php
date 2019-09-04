@@ -64,6 +64,7 @@ Route::group([
 
     // Progress routes
     Route::get('/web/progress/language/{language}', 'ProgressController@language');
+    Route::get('/web/progress/words/{language}', 'ProgressController@wordCount');
     Route::get('/web/progress/user/{user?}', 'ProgressController@user');
 
     // Platforms
