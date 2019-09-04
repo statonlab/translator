@@ -4,6 +4,7 @@ namespace App\Services\Translation;
 
 use App\Language;
 use App\Platform;
+use App\SerializedLine;
 use App\TranslatedLine;
 use App\User;
 use Illuminate\Support\Collection;
@@ -76,5 +77,19 @@ class TranslationProgress
             'total' => $total,
             'completed' => $complete
         ];
+    }
+
+    /**
+     * Get the total word count for all entries for a language.
+     *
+     * @param \App\Language $language
+     * @return mixed
+     */
+    public function wordCount(Language $language) {
+        /** @var \App\File $file */
+        $file = $language->platform->files()->current()->first();
+        return $file->serializedLines->reduce(function($accumulator, $line) {
+            return $accumulator + strlen($line->value);
+        }, 0);
     }
 }

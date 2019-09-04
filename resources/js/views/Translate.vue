@@ -49,7 +49,7 @@
                         </span>
                     </label>
                     <progress-bar :value="progress" :show-value="true">
-                        <small class="ml-auto text-muted">{{ wordCount }} words</small>
+                        <small class="ml-auto text-muted">{{ totalWords - wordCount }} / {{ totalWords }} words translated</small>
                     </progress-bar>
                 </div>
             </form>
@@ -111,6 +111,7 @@
         last_page       : 1,
         completed       : 0,
         wordCount       : 0,
+        totalWords      : 0,
       }
     },
 
@@ -184,6 +185,7 @@
           this.page      = data.current_page
           this.last_page = data.last_page
           this.updateProgress()
+          this.loadTotalWordCount()
 
           if (data.total === 0 && data.current_page > 1) {
             this.goTo(1)
@@ -231,9 +233,9 @@
           this.progress  = data.progress
           this.completed = data.completed
           this.total     = data.total
-          if(event) {
+          if (event) {
             this.lines = this.lines.map(l => {
-              if(l.id === event.id) {
+              if (l.id === event.id) {
                 return event
               }
 
@@ -241,6 +243,15 @@
             })
           }
           this.computeWordCount()
+        } catch (e) {
+          console.error(e)
+        }
+      },
+
+      async loadTotalWordCount() {
+        try {
+          const {data}   = await axios.get('/web/progress/words/' + this.selectedLanguage)
+          this.totalWords  = data
         } catch (e) {
           console.error(e)
         }
