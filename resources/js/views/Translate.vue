@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="mb-4">
+        <div class="">
             <form @submit.prevent class="row">
                 <div class="form-group col-6 col-md-3">
                     <label for="platforms" class="form-label d-block mb-2">Platform</label>
@@ -55,25 +55,48 @@
             </form>
         </div>
 
-        <div class="card" v-if="!loading && lines.length === 0">
-            <div class="card-body" v-if="platforms.length === 0">
-                Please
-                <router-link to="/platforms">create a platform</router-link>
-                first to be able to start translating.
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <label class="form-label" for="search">Filters</label>
+                            <input
+                                id="search"
+                                name="search"
+                                v-model="search"
+                                type="search"
+                                class="form-control shadow-none"
+                                placeholder="Search lines">
+                            <small class="form-text text-muted">
+                                Search in {{ activeLanguage }} or English
+                            </small>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body" v-if="platforms.length > 0 && languages.length === 0">
-                Please
-                <router-link to="/languages">create a language</router-link>
-                first
-                to be able to start translating.
-            </div>
-            <div class="card-body" v-if="languages.length > 0">
-                There is no translatable text that matches your filtering criteria.
-            </div>
-        </div>
 
-        <div v-for="line in lines">
-            <translated-line :line="line" @save="updateProgress($event)" :key="line.id"/>
+            <div class="col-lg-9">
+                <div class="card" v-if="!loading && lines.length === 0">
+                    <div class="card-body" v-if="platforms.length === 0">
+                        Please
+                        <router-link to="/platforms">create a platform</router-link>
+                        first to be able to start translating.
+                    </div>
+                    <div class="card-body" v-if="platforms.length > 0 && languages.length === 0">
+                        Please
+                        <router-link to="/languages">create a language</router-link>
+                        first
+                        to be able to start translating.
+                    </div>
+                    <div class="card-body" v-if="languages.length > 0">
+                        There is no translatable text that matches your filtering criteria.
+                    </div>
+                </div>
+                <div v-for="line in lines">
+                    <translated-line :line="line" @save="updateProgress($event)" :key="line.id"/>
+                </div>
+            </div>
         </div>
 
         <pagination v-if="last_page > 1"
@@ -112,28 +135,54 @@
         completed       : 0,
         wordCount       : 0,
         totalWords      : 0,
+        search          : '',
+        request         : null,
       }
     },
 
     watch: {
       selectedPlatform() {
-        this.page = 1
+        this.loading = true
+        this.page    = 1
         this.loadLanguages()
       },
 
       selectedLanguage() {
-        this.page = 1
+        this.loading = true
+        this.page    = 1
         this.loadLines()
       },
 
       show() {
+        this.loading = true
+        this.page    = 1
+        this.loadLines()
+      },
+
+      search() {
         this.page = 1
         this.loadLines()
       },
     },
 
     mounted() {
+      this.loading = true
       this.loadPlatforms()
+    },
+
+    computed: {
+      activeLanguage() {
+        if (!this.selectedLanguage || this.languages.length === 0) {
+          return ''
+        }
+
+        const lang = this.languages.filter(l => this.selectedLanguage === l.id)
+        if (lang.length === 0) {
+          return ''
+        }
+
+        return lang[0].language
+      },
     },
 
     methods: {
@@ -176,10 +225,16 @@
           return
         }
 
-        this.loading = true
+        if (this.request !== null) {
+          this.request()
+        }
+
         try {
           const {data}   = await axios.get('/web/translation/lines/' + this.selectedLanguage, {
-            params: this.getParams(),
+            params     : this.getParams(),
+            cancelToken: new axios.CancelToken(r => {
+              this.request = r
+            }),
           })
           this.lines     = data.data
           this.page      = data.current_page
@@ -191,14 +246,18 @@
             this.goTo(1)
           }
         } catch (e) {
-          console.error(e)
+          if (!axios.isCancel(e)) {
+            console.error(e)
+          }
         }
+        this.request = null
         this.loading = false
       },
 
       getParams() {
         let params = {
-          page: this.page,
+          page  : this.page,
+          search: this.search,
         }
 
         switch (this.show) {
@@ -250,8 +309,8 @@
 
       async loadTotalWordCount() {
         try {
-          const {data}   = await axios.get('/web/progress/words/' + this.selectedLanguage)
-          this.totalWords  = data
+          const {data}    = await axios.get('/web/progress/words/' + this.selectedLanguage)
+          this.totalWords = data
         } catch (e) {
           console.error(e)
         }

@@ -6,8 +6,8 @@
                     <div class="flex-grow-1 mr-1">
                         <input type="text"
                                name="value"
-                               :class="['form-control', {'is-valid': saved, 'is-invalid': form.errors.has('value')}]"
-                               placeholder="Translation goes here"
+                               :class="['form-control', 'shadow-none', {'is-valid': saved, 'is-invalid': form.errors.has('value')}]"
+                               placeholder="Translate the line here"
                                v-model="form.value"/>
                         <small class="form-text text-danger"
                                v-if="form.errors.has('value')">

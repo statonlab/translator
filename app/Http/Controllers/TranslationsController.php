@@ -73,6 +73,7 @@ class TranslationsController extends Controller
             'new_only' => 'nullable|boolean',
             'needs_updating' => 'nullable|boolean',
             'language_id' => 'nullable|exists:languages,id',
+            'search' => 'nullable|max:255',
         ]);
 
         /** @var \App\User $user */
@@ -125,18 +126,22 @@ class TranslationsController extends Controller
      */
     protected function filterLines(Request $request, Builder $lines)
     {
-        $lines->where(function ($query) use ($request) {
+        $lines->where(function (Builder $query) use ($request) {
             if ($request->new_only && $request->needs_updating) {
-                $query->where(function ($query) {
-                    /** @var TranslatedLine $query */
-                    $query->needsTranslation();
-                })->orWhere(function ($query) {
-                    /** @var TranslatedLine $query */
-                    $query->needsUpdating();
+                $query->where(function (Builder $query) {
+                    $query->where(function (Builder $query) {
+                        /** @var TranslatedLine $query */
+                        $query->needsTranslation();
+                    })->orWhere(function (Builder $query) {
+                        /** @var TranslatedLine $query */
+                        $query->needsUpdating();
+                    });
                 });
             } elseif ($request->new_only) {
+                /** @var TranslatedLine $query */
                 $query->needsTranslation();
             } elseif ($request->needs_updating) {
+                /** @var TranslatedLine $query */
                 $query->needsUpdating();
             }
 
@@ -148,6 +153,18 @@ class TranslationsController extends Controller
                 if ($is_assigned) {
                     $query->where('language_id', $request->language_id);
                 }
+            }
+
+            if (! empty($request->search)) {
+                $term = $request->search;
+
+                $query->where(function (Builder $query) use ($term) {
+                    $query->where('translated_lines.value', 'like', "%$term%");
+                    $query->orWhereHas('serializedLine',
+                        function (Builder $query) use ($term) {
+                            $query->where('serialized_lines.value', 'like', "%$term%");
+                        });
+                });
             }
         });
 
