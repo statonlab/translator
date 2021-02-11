@@ -26,7 +26,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "apexcharts": "^3.6.10",
+        "apexcharts": "^3.24.0",
         "autosize": "^4.0.2",
         "ionicons": "^4.5.6",
         "moment": "^2.24.0",
